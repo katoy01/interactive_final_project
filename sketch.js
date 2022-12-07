@@ -366,6 +366,7 @@ function draw() {
             animal.moveAndDisplay();
         })
         showProduceInventory();
+        displayTime();
     }
 
     if (stage === 2) {
@@ -593,20 +594,53 @@ function displaySelectedBox(itemNum) {
 // that displays the images and numbers of produce you have obtained
 function showProduceInventory() {
     let tileDist = 5;
-    let barWidth = tileDist + (inventoryTileSize + tileDist) * 5, barHeight = 42;
+    let produceNum = 5;
+    let barWidth = tileDist + (inventoryTileSize + tileDist) * produceNum, barHeight = 42;
     let barStartX = width / 2 - barWidth / 2, barStartY = height - barHeight;
 
-    noStroke();
+    strokeWeight(5);
+    stroke(120, 65, 0);
     fill(150, 75, 0);
     rect(barStartX, barStartY, barWidth, barHeight);
 
+    strokeWeight(2);
     for (let i = 3; i < 8; i++) {
         image(inventoryArray[i].graphic, barStartX + 5 + ((tileDist + inventoryTileSize) * (i - 3)), barStartY + 5);
         fill(255);
         textSize(15);
         text(inventoryArray[i].amount, barStartX + 6 + ((tileDist + inventoryTileSize) * (i - 3)), barStartY + 13);
     }
+    noStroke();
+}
 
+let lock = 1;
+let ampm = 0;
+let startTime = 6;
+let secToMin = 20;
+function displayTime() {
+    let secondsPassed = millis() / 1000, minutesPassed = (int)(secondsPassed * secToMin);
+    let hoursNum = (int)(startTime + ((minutesPassed / 60))) % 13;
+    let minsNum = (minutesPassed % 60);
+    if (hoursNum === 12 && lock) {
+        lock = 0;
+        ampm ? ampm = 0 : ampm = 1;
+    } else if (hoursNum === 0) {
+        hoursNum = 1;
+        lock = 1;
+    }
+    let hours = ("0" + hoursNum).slice(-2), minutes = ("0" + minsNum).slice(-2);
+    let time = hours + ":" + minutes + (ampm ? " AM" : " PM");
+    text(time, width / 2, height / 2);
+
+    // slowly get dark... get red then get dark
+    // From 6PM to 8PM 
+    if (hoursNum >= 6 && hoursNum <= 8 && ampm === 0) {
+        fill('rgba(253, 94, 83, 0.15)');
+        rect(0, 0, width, height);
+    } else if ((hoursNum >= 9 && ampm === 0) || (hoursNum <= 6 && ampm === 1) || (hoursNum >= 12 && ampm === 1)) {
+        fill('rgba(78, 84, 129, 0.3)');
+        rect(0, 0, width, height);
+    }
 }
 
 
@@ -1040,6 +1074,209 @@ class Item {
         if (this.name.includes("Seeds")) {
             let nameArray = this.name.toLowerCase().split(" ");
             this.plantName = nameArray[0];
+        }
+    }
+}
+
+class NPC {
+    findPaths(grid, startX, startY, endX, endY) {
+        // step 1: clear all existing pathfinding information in the grid
+        for (var i = 0; i < grid.length; i++) {
+            for (var j = 0; j < grid[i].length; j++) {
+                grid[i][j].stepsToEnd = -1;
+                grid[i][j].nextX = "unknown";
+                grid[i][j].nextY = "unknown";
+                grid[i][j].dx = 0;
+                grid[i][j].dy = 0;
+                grid[i][j].nextDirection = -1;
+            }
+        }
+
+        // step 2: mark the end path as 0 steps
+        grid[endX][endY].stepsToEnd = 0;
+        grid[endX][endY].nextX = "none";
+        grid[endX][endY].nextY = "none";
+        grid[endX][endY].dx = 0;
+        grid[endX][endY].dy = 0;
+        grid[endX][endY].nextDirection = -1;
+
+        // step 3: find all this loop keeps calling 'findPathIterative' until all cells in the grid have
+        // pointers to the optimal end path
+        while (true) {
+            if (findPathIterative(grid, startX, startY) === 0) {
+                break;
+            }
+        }
+
+        // // tell all the creatures to recompute their paths
+        // for (var c in creatures) {
+        //     creatures[c].recomputePath();
+        // }
+    }
+
+    findPathIterative(grid, startX, startY) {
+        // start off by making a deep copy of the entire array
+        var gridCopy = makeDeepCopy(grid);
+
+        // assume we need to make 0 changes to the pathing info in the grid - this is important
+        // since if this number fails to change during the computation phase below we can assume
+        // that we have computed a valid optimal path to the end cell
+        var numChanges = 0;
+
+        // visit every cell in the grid
+        for (var x = 0; x < grid.length; x++) {
+            for (var y = 0; y < grid[x].length; y++) {
+                // only need to do something if this is tile is not solid or we know pathing info for the tile already
+                if (grid[x][y].solid === false && grid[x][y].stepsToEnd == -1) {
+                    // check element: RIGHT
+                    if (x < grid.length - 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (grid[x + 1][y].solid === false && grid[x + 1][y].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[x][y].stepsToEnd = grid[x + 1][y].stepsToEnd + 1;
+                            gridCopy[x][y].nextX = x + 1;
+                            gridCopy[x][y].nextY = y;
+                            gridCopy[x][y].dx = 1;
+                            gridCopy[x][y].dy = 0;
+                            gridCopy[x][y].nextDirection = "right";
+
+                            if (checkEnd(x + 1, y, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: LEFT
+                    if (x >= 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (grid[x - 1][y].solid === false && grid[x - 1][y].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[x][y].stepsToEnd = grid[x - 1][y].stepsToEnd + 1;
+                            gridCopy[x][y].nextX = x - 1;
+                            gridCopy[x][y].nextY = y;
+                            gridCopy[x][y].dx = -1;
+                            gridCopy[x][y].dy = 0;
+                            gridCopy[x][y].nextDirection = "left";
+
+                            if (checkEnd(x - 1, y, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: DOWN
+                    if (y < grid[x].length - 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (grid[x][y + 1].solid === false && grid[x][y + 1].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[x][y].stepsToEnd = grid[x][y + 1].stepsToEnd + 1;
+                            gridCopy[x][y].nextX = x;
+                            gridCopy[x][y].nextY = y + 1;
+                            gridCopy[x][y].dx = 0;
+                            gridCopy[x][y].dy = 1;
+                            gridCopy[x][y].nextDirection = "down";
+
+                            if (checkEnd(x, y + 1, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: UP
+                    if (y >= 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (grid[x][y - 1].solid === false && grid[x][y - 1].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[x][y].stepsToEnd = grid[x][y - 1].stepsToEnd + 1;
+                            gridCopy[x][y].nextX = x;
+                            gridCopy[x][y].nextY = y - 1;
+                            gridCopy[x][y].dx = 0;
+                            gridCopy[x][y].dy = -1;
+                            gridCopy[x][y].nextDirection = "up";
+
+                            if (checkEnd(x, y - 1, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // update the grid with the copy that we made
+        grid = gridCopy;
+
+        // tell the caller how many changes we made (if 0 the caller will stop the 'while' loop and a path has been computed)
+        return numChanges;
+    }
+
+    checkEnd(x1, y1, x2, y2) {
+        if (x1 === x2 && y1 === y2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    makeDeepCopy(g) {
+        var gridCopy = [];
+
+        for (var x = 0; x < g.length; x++) {
+            var newRow = [];
+
+            for (var y = 0; y < g[x].length; y++) {
+                var newObj = {};
+
+                for (var property in g[x][y]) {
+                    newObj[property] = g[x][y][property];
+                }
+
+                newRow.push(newObj);
+            }
+
+            gridCopy.push(newRow);
+        }
+
+        return gridCopy;
+    }
+}
+
+class Customer extends NPC {
+    constructor(x, y, destX, destY, world) {
+        this.x = x;
+        this.y = y;
+        // this.nodeX = int( this.x / cellSize );
+        // this.nodeY = int( this.y / cellSize );
+        this.destX = destX;
+        this.destY = destY;
+        this.grid = [];
+        this.initGrid(this.grid, world, world[0].length, world.length);
+        this.customerFindPath();
+    }
+
+    customerFindPath() {
+        this.findPaths(this.grid, int(this.x / cellSize), int(this.y / cellSize), this.destX, this.destY);
+    }
+
+    initGrid(grid, world, gridWidth, gridHeight) {
+        for (var x = 0; x < gridWidth; x++) {
+            var newRow = [];
+            for (var y = 0; y < gridHeight; y++) {
+                // each cell in our grid holds an object to define its color, whether it is solid, and pathing info, including pointers to the next cell that will bring us closer to the optimal path to
+                // the desired end point of the maze
+                // we assume at the beginning that we don't know how far it is to get to the end (-1)
+                // and we default these pointers to "unknown"
+                newRow.push({ solid: isSolid(world[y][x]), stepsToEnd: -1, nextX: "unknown", nextY: "unknown", nextDirection: -1 });
+            }
+            grid.push(newRow);
         }
     }
 }
