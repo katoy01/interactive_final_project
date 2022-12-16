@@ -121,28 +121,28 @@ let world = [
     //                                       10                                            20                                       30                                      40                                      50                                       60                                     70                                          80   
     [13, 2369, 2370, 1205, 909, 909, 1060, 607, 607, 3014, 3015, 3016, 3017, 3018, 3019, 3020, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 397, 398, 399, 400, 607, 607, 607, 607, 607, 1205, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 1060, 607, 607, 2812, 2369, 2369, 13],
     //                                       10                                             20                                       30                                       40                                              50                                                60                                                70                                             80   
-    [13, 2369, 2370, 1205, 909, 909, 1060, 607, 607, 3162, 3163, 3164, 3165, 3166, 3167, 3168, 607, 607, 4004, 607, 607, 607, 607, 607, 607, 607, 607, 607, 544,545,546,547,548, 607, 607, 607, 607, 607, 1205, 909, 909, 1062, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1056, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 607, 607, 3162, 3163, 3164, 3165, 3166, 3167, 3168, 607, 607, 4004, 607, 607, 607, 607, 607, 607, 607, 607, 607, 544, 545, 546, 547, 548, 607, 607, 607, 607, 607, 1205, 909, 909, 1062, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1056, 607, 607, 2812, 2369, 2369, 13],
     //                                       10                                             20                                         30                                       40                                          50                                      60                                      70                                         80   
-    [13, 2369, 2370, 1205, 909, 909, 1060, 6958, 607, 3310, 3311, 3312, 3313, 3314, 3315, 3316, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 4004,692,693,694,695,696, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 3850, 3851, 607, 4003, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 6958, 607, 3310, 3311, 3312, 3313, 3314, 3315, 3316, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 4004, 692, 693, 694, 695, 696, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 3850, 3851, 607, 4003, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                       10                                              20                                         30                                      40                                          50                                            60                                                70                                           80   
-    [13, 2369, 2370, 1205, 909, 909, 1060, 7106, 607, 3458, 3459, 3460, 3461, 3462, 3463, 3464, 607, 607, 4003, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 840,841,842,843,844, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 3998, 3999, 607, 607, 607, 607, 607, 607, 607, 1802, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 1946, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 7106, 607, 3458, 3459, 3460, 3461, 3462, 3463, 3464, 607, 607, 4003, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 840, 841, 842, 843, 844, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 3998, 3999, 607, 607, 607, 607, 607, 607, 607, 1802, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 2087, 1946, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                        10                                              20                                         30                                    40                                          50                                            60                                                70                                           80   
-    [13, 2369, 2370, 1205, 909, 909, 1060, 7254, 3857, 3606, 3607, 3608, 3609, 3610, 3611, 3612, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 988,989,990,991,992, 607, 607, 607, 4003, 607, 1205, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 7254, 3857, 3606, 3607, 3608, 3609, 3610, 3611, 3612, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 988, 989, 990, 991, 992, 607, 607, 607, 4003, 607, 1205, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                               10                                                  20                                                30                                                  40                                                 50                                                      60                                                           70                                                     80    
-    [13, 2369, 2370, 1205, 909, 909, 1060, 607, 607, 607, 607, 1205, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607,607,607, 1205, 909, 1060, 607, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936,1943, 1947, 1947, 1947, 1947, 1947, 1799, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 607, 607, 607, 607, 1205, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1205, 909, 1060, 607, 607, 607, 607, 607, 607, 1205, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1943, 1947, 1947, 1947, 1947, 1947, 1799, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //^30th row 
     //                                                  10                                                         20                                                          30                                                         40                                                 50                                                        60                                                          70                                                       80    
-    [13, 2369, 2370, 1205, 909, 909, 1208, 1207, 1207, 1207, 1207, 1209, 909, 1208, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207,1207,1207, 1209, 909, 1208, 1207, 1207, 1207, 1207, 1207, 1207, 1209, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 1874, 1875, 1876, 1877, 1878, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 3850, 3851, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1208, 1207, 1207, 1207, 1207, 1209, 909, 1208, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1207, 1209, 909, 1208, 1207, 1207, 1207, 1207, 1207, 1207, 1209, 909, 909, 1060, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 1874, 1875, 1876, 1877, 1878, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 3850, 3851, 607, 2812, 2369, 2369, 13],
     //                                              10                                                20                                                30                                                 40                                                  50                                                       60                                                          70                                                      80    
-    [13, 2369, 2370, 1205, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 1060, 6958, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2022, 2023, 2024, 2025, 2026,1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 3998, 3999, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 1060, 6958, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2022, 2023, 2024, 2025, 2026, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 3998, 3999, 607, 2812, 2369, 2369, 13],
     //                                               10                                                 20                                               30                                                40                                                   50                                                        60                                                70                                           80    
-    [13, 2369, 2370, 1205, 6958, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 1060, 7106, 607, 607, 607, 607, 4782, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936,1945, 2170, 2171, 2172, 2173, 2174,1800, 1936, 2226, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 6958, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 909, 1060, 7106, 607, 607, 607, 607, 4782, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2170, 2171, 2172, 2173, 2174, 1800, 1936, 2226, 1936, 1936, 1936, 1936, 1945, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                                    10                                                          20                                                          30                                                          40                                                   50                                                       60                                                70                                           80    
-    [13, 2369, 2370, 4155, 7106, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 607, 7254, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2318, 2319, 2320, 2321, 2322,1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 4004, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 4155, 7106, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 607, 7254, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2318, 2319, 2320, 2321, 2322, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 4004, 607, 607, 2812, 2369, 2369, 13],
     //                                                10                                          20                                      30                                      40                                      50                                              60                                                70                                           80    
-    [13, 2369, 2370, 607, 7254, 3856, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936,1945, 2466, 2467, 2468, 2469, 2470,1800, 1936, 1936, 1929, 1947, 1947, 1947, 1949, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 607, 7254, 3856, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2466, 2467, 2468, 2469, 2470, 1800, 1936, 1936, 1929, 1947, 1947, 1947, 1949, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                       10                                          20                                      30                                      40                                      50                                             60                                               70                     plain grass               80    
-    [13, 2369, 2369, 2371, 2222, 4155, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1948, 1936, 1936, 1936, 1936, 1936,  1797,  1798,  1946,  1939,  1802, 1798, 1796, 1936, 1936, 1945, 607, 607, 607, 607, 607, 607, 607, 607, 2368, 2369, 2369, 13],
+    [13, 2369, 2369, 2371, 2222, 4155, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1948, 1936, 1936, 1936, 1936, 1936, 1797, 1798, 1946, 1939, 1802, 1798, 1796, 1936, 1936, 1945, 607, 607, 607, 607, 607, 607, 607, 607, 2368, 2369, 2369, 13],
     //                                          10                                                20                                                30                                                40                                             50                                            60                                               70                                               80    
     [13, 2369, 2369, 2369, 2369, 2376, 3850, 3851, 2376, 2376, 2376, 2376, 2376, 3850, 3851, 2376, 2376, 2376, 2376, 2376, 2376, 3850, 3851, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2376, 2222, 607, 607, 607, 607, 607, 607, 607, 1948, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 1939, 1800, 1936, 1936, 1936, 1936, 1945, 607, 607, 2220, 2221, 2221, 2221, 2221, 2221, 2369, 2369, 2369, 13],
     //                                          10                                                20                                                30                                                40                                             50                                            60                                               70                                               80    
@@ -160,6 +160,7 @@ let overlay = [];
 let player;
 let plantArr = [];
 let cow, cowBaby, chicken, chickenBaby;
+let customerArr = [];
 let animalArr = [];
 
 // Stores information for all the plants
@@ -291,6 +292,14 @@ function setup() {
     chicken = new Animal(66, 13, 'chicken');
     chickenBaby = new Animal(68, 15, 'chickenBaby');
     animalArr.push(cow, cowBaby, chicken, chickenBaby);
+    for (let i = 0; i < 5; i++) {
+        let destX, destY;
+        do {
+            destX = floor(random(30, 50)), destY = floor(random(5, 20));
+        } while (isSolid(world[destY, destX]))
+        let customer = new Customer(9, 8, destX, destY, world);
+        customerArr.push(customer);
+    }
 
     // Stores all the items in inventory
     inventoryArray = [
@@ -364,6 +373,10 @@ function draw() {
         });
         animalArr.forEach(animal => {
             animal.moveAndDisplay();
+        })
+        customerArr.forEach(customer => {
+            customer.display();
+            customer.move();
         })
         showProduceInventory();
         displayTime();
@@ -503,11 +516,11 @@ function isSolid(id) {
         || id == 3856 || id == 3720 || id == 3722 || id == 4588 || id == 4589 || id == 4595 || id == 4596
         || id == 4303 || id == 4304 || id == 4305 || id == 2664 || id == 2220 || id == 4444 || id == 4451
         || id == 2087 || id == 1800 || id == 1948 || id == 1947 || id == 1949 || id == 1945 || id == 1929 || id == 1946
-        || id == 4296 || id == 4592 || id == 4589 || id == 4298 || id == 1874 ||id == 1875||id == 1876||id == 1877||id == 1878 || id == 2022 || id == 2023 || id == 2024|| id == 2025|| id == 2026
-        || id == 2170 || id == 2171|| id == 2172|| id == 2173|| id == 2174|| id == 2318|| id == 2319|| id == 2320|| id == 2321|| id == 2322 || id == 2466 
-        || id == 2467|| id == 2468|| id == 2469|| id == 2470 || id == 397 || id == 398 || id == 399 || id == 400 || id == 544 || id == 545 
+        || id == 4296 || id == 4592 || id == 4589 || id == 4298 || id == 1874 || id == 1875 || id == 1876 || id == 1877 || id == 1878 || id == 2022 || id == 2023 || id == 2024 || id == 2025 || id == 2026
+        || id == 2170 || id == 2171 || id == 2172 || id == 2173 || id == 2174 || id == 2318 || id == 2319 || id == 2320 || id == 2321 || id == 2322 || id == 2466
+        || id == 2467 || id == 2468 || id == 2469 || id == 2470 || id == 397 || id == 398 || id == 399 || id == 400 || id == 544 || id == 545
         || id == 546 || id == 546 || id == 547 || id == 548 || id == 692 || id == 693 || id == 694 || id == 695 || id == 696 || id == 840
-        || id == 841 || id == 842 || id == 843 || id == 844 || id == 988 || id == 989 || id == 900 || id == 991 || id == 992 ) {
+        || id == 841 || id == 842 || id == 843 || id == 844 || id == 988 || id == 989 || id == 900 || id == 991 || id == 992) {
         return true;
     }
     return false;
@@ -617,31 +630,35 @@ function showProduceInventory() {
     noStroke();
 }
 
-let lock = 1;
-let ampm = 0;
+// let lock = 1;
+let ampm = 1;
 let startTime = 6;
-let secToMin = 20;
+let secToMin = 2;
 function displayTime() {
     let secondsPassed = millis() / 1000, minutesPassed = (int)(secondsPassed * secToMin);
-    let hoursNum = (int)(startTime + ((minutesPassed / 60))) % 13;
+    let hoursNum = (int)(startTime + ((minutesPassed / 60))) % 24 + 1;
     let minsNum = (minutesPassed % 60);
-    if (hoursNum === 12 && lock) {
-        lock = 0;
-        ampm ? ampm = 0 : ampm = 1;
-    } else if (hoursNum === 0) {
-        hoursNum = 1;
-        lock = 1;
+    if (hoursNum >= 12 && hoursNum < 24) {
+        ampm = 0;
+    } else {
+        ampm = 1;
     }
-    let hours = ("0" + hoursNum).slice(-2), minutes = ("0" + minsNum).slice(-2);
+    let hours = ("0" + hoursNum % 12).slice(-2);
+    if (hoursNum % 12 === 0) {
+        hours = "12";
+    }
+    minutes = ("0" + minsNum).slice(-2);
     let time = hours + ":" + minutes + (ampm ? " AM" : " PM");
-    text(time, width / 2, height / 2);
+    text(time, width - 80, 30);
 
     // slowly get dark... get red then get dark
-    // From 6PM to 8PM 
-    if (hoursNum >= 6 && hoursNum <= 8 && ampm === 0) {
+    // From 6PM to 8PM 18 --> 20
+    if (hoursNum >= 18 && hoursNum <= 20 && ampm === 0) {
         fill('rgba(253, 94, 83, 0.15)');
         rect(0, 0, width, height);
-    } else if ((hoursNum >= 9 && ampm === 0) || (hoursNum <= 6 && ampm === 1) || (hoursNum >= 12 && ampm === 1)) {
+    }
+    // From 9PM to 6AM  21 --> 6
+    else if ((hoursNum >= 21) || (hoursNum <= 6)) {
         fill('rgba(78, 84, 129, 0.3)');
         rect(0, 0, width, height);
     }
@@ -1097,12 +1114,12 @@ class NPC {
         }
 
         // step 2: mark the end path as 0 steps
-        grid[endX][endY].stepsToEnd = 0;
-        grid[endX][endY].nextX = "none";
-        grid[endX][endY].nextY = "none";
-        grid[endX][endY].dx = 0;
-        grid[endX][endY].dy = 0;
-        grid[endX][endY].nextDirection = -1;
+        grid[endY][endX].stepsToEnd = 0;
+        grid[endY][endX].nextX = "none";
+        grid[endY][endX].nextY = "none";
+        grid[endY][endX].dx = 0;
+        grid[endY][endX].dy = 0;
+        grid[endY][endX].nextDirection = -1;
 
         // step 3: find all this loop keeps calling 'findPathIterative' until all cells in the grid have
         // pointers to the optimal end path
@@ -1128,21 +1145,21 @@ class NPC {
         var numChanges = 0;
 
         // visit every cell in the grid
-        for (var x = 0; x < grid.length; x++) {
-            for (var y = 0; y < grid[x].length; y++) {
+        for (var y = 0; y < grid.length; y++) {
+            for (var x = 0; x < grid[y].length; x++) {
                 // only need to do something if this is tile is not solid or we know pathing info for the tile already
-                if (grid[x][y].solid === false && grid[x][y].stepsToEnd == -1) {
+                if (grid[y][x].solid === false && grid[y][x].stepsToEnd == -1) {
                     // check element: RIGHT
-                    if (x < grid.length - 1) {
+                    if (y < grid.length - 1) {
                         // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[x + 1][y].solid === false && grid[x + 1][y].stepsToEnd >= 0) {
+                        if (grid[y][x + 1].solid === false && grid[y][x + 1].stepsToEnd >= 0) {
                             // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[x][y].stepsToEnd = grid[x + 1][y].stepsToEnd + 1;
-                            gridCopy[x][y].nextX = x + 1;
-                            gridCopy[x][y].nextY = y;
-                            gridCopy[x][y].dx = 1;
-                            gridCopy[x][y].dy = 0;
-                            gridCopy[x][y].nextDirection = "right";
+                            gridCopy[y][x].stepsToEnd = grid[y][x + 1].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x + 1;
+                            gridCopy[y][x].nextY = y;
+                            gridCopy[y][x].dx = 1;
+                            gridCopy[y][x].dy = 0;
+                            gridCopy[y][x].nextDirection = "right";
 
                             if (checkEnd(x + 1, y, startX, startY)) {
                                 return 0;
@@ -1155,14 +1172,14 @@ class NPC {
                     // check element: LEFT
                     if (x >= 1) {
                         // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[x - 1][y].solid === false && grid[x - 1][y].stepsToEnd >= 0) {
+                        if (grid[y][x - 1].solid === false && grid[y][x - 1].stepsToEnd >= 0) {
                             // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[x][y].stepsToEnd = grid[x - 1][y].stepsToEnd + 1;
-                            gridCopy[x][y].nextX = x - 1;
-                            gridCopy[x][y].nextY = y;
-                            gridCopy[x][y].dx = -1;
-                            gridCopy[x][y].dy = 0;
-                            gridCopy[x][y].nextDirection = "left";
+                            gridCopy[y][x].stepsToEnd = grid[y][x - 1].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x - 1;
+                            gridCopy[y][x].nextY = y;
+                            gridCopy[y][x].dx = -1;
+                            gridCopy[y][x].dy = 0;
+                            gridCopy[y][x].nextDirection = "left";
 
                             if (checkEnd(x - 1, y, startX, startY)) {
                                 return 0;
@@ -1175,14 +1192,14 @@ class NPC {
                     // check element: DOWN
                     if (y < grid[x].length - 1) {
                         // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[x][y + 1].solid === false && grid[x][y + 1].stepsToEnd >= 0) {
+                        if (grid[y + 1][x].solid === false && grid[y + 1][x].stepsToEnd >= 0) {
                             // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[x][y].stepsToEnd = grid[x][y + 1].stepsToEnd + 1;
-                            gridCopy[x][y].nextX = x;
-                            gridCopy[x][y].nextY = y + 1;
-                            gridCopy[x][y].dx = 0;
-                            gridCopy[x][y].dy = 1;
-                            gridCopy[x][y].nextDirection = "down";
+                            gridCopy[y][x].stepsToEnd = grid[y + 1][x].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x;
+                            gridCopy[y][x].nextY = y + 1;
+                            gridCopy[y][x].dx = 0;
+                            gridCopy[y][x].dy = 1;
+                            gridCopy[y][x].nextDirection = "down";
 
                             if (checkEnd(x, y + 1, startX, startY)) {
                                 return 0;
@@ -1195,14 +1212,14 @@ class NPC {
                     // check element: UP
                     if (y >= 1) {
                         // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[x][y - 1].solid === false && grid[x][y - 1].stepsToEnd >= 0) {
+                        if (grid[y - 1][x].solid === false && grid[y - 1][x].stepsToEnd >= 0) {
                             // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[x][y].stepsToEnd = grid[x][y - 1].stepsToEnd + 1;
-                            gridCopy[x][y].nextX = x;
-                            gridCopy[x][y].nextY = y - 1;
-                            gridCopy[x][y].dx = 0;
-                            gridCopy[x][y].dy = -1;
-                            gridCopy[x][y].nextDirection = "up";
+                            gridCopy[y][x].stepsToEnd = grid[y - 1][x].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x;
+                            gridCopy[y][x].nextY = y - 1;
+                            gridCopy[y][x].dx = 0;
+                            gridCopy[y][x].dy = -1;
+                            gridCopy[y][x].nextDirection = "up";
 
                             if (checkEnd(x, y - 1, startX, startY)) {
                                 return 0;
@@ -1233,14 +1250,14 @@ class NPC {
     makeDeepCopy(g) {
         var gridCopy = [];
 
-        for (var x = 0; x < g.length; x++) {
+        for (var y = 0; y < g.length; y++) {
             var newRow = [];
 
-            for (var y = 0; y < g[x].length; y++) {
+            for (var x = 0; x < g[y].length; x++) {
                 var newObj = {};
 
-                for (var property in g[x][y]) {
-                    newObj[property] = g[x][y][property];
+                for (var property in g[y][x]) {
+                    newObj[property] = g[y][x][property];
                 }
 
                 newRow.push(newObj);
@@ -1253,34 +1270,294 @@ class NPC {
     }
 }
 
-class Customer extends NPC {
-    constructor(x, y, destX, destY, world) {
-        this.x = x;
-        this.y = y;
+class Customer {
+    constructor(arrayX, arrayY, destX, destY, world) {
+        this.x = arrayX * worldTileSize + worldTileSize / 2;
+        this.y = arrayY * worldTileSize + worldTileSize / 2;
         // this.nodeX = int( this.x / cellSize );
         // this.nodeY = int( this.y / cellSize );
         this.destX = destX;
         this.destY = destY;
+        this.nodeX = int(this.x / worldTileSize);
+        this.nodeY = int(this.y / worldTileSize);
         this.grid = [];
-        this.initGrid(this.grid, world, world[0].length, world.length);
-        this.customerFindPath();
+        this.initGrid(world, world[0].length, world.length);
+        this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
+        // this.customerFindPath();
+        this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
+        this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
+
+        this.nodeHistory = [];
+        this.nodeHistory.push([this.nodeX, this.nodeY]);
     }
 
-    customerFindPath() {
-        this.findPaths(this.grid, int(this.x / cellSize), int(this.y / cellSize), this.destX, this.destY);
+    findPaths(startX, startY, endX, endY) {
+        console.log(startX, startY, endX, endY);
+        console.log(isSolid(world[endY][endX]));
+
+        // step 1: clear all existing pathfinding information in the grid
+        for (var i = 0; i < this.grid.length; i++) {
+            for (var j = 0; j < this.grid[i].length; j++) {
+                this.grid[i][j].stepsToEnd = -1;
+                this.grid[i][j].nextX = "unknown";
+                this.grid[i][j].nextY = "unknown";
+                this.grid[i][j].dx = 0;
+                this.grid[i][j].dy = 0;
+                this.grid[i][j].nextDirection = -1;
+            }
+        }
+
+        // step 2: mark the end path as 0 steps
+        this.grid[endY][endX].stepsToEnd = 0;
+        this.grid[endY][endX].nextX = "none";
+        this.grid[endY][endX].nextY = "none";
+        this.grid[endY][endX].dx = 0;
+        this.grid[endY][endX].dy = 0;
+        this.grid[endY][endX].nextDirection = -1;
+
+        // step 3: find all this loop keeps calling 'findPathIterative' until all cells in the grid have
+        // pointers to the optimal end path
+        while (true) {
+            if (this.findPathIterative(startX, startY) === 0) {
+                break;
+            }
+        }
+
+        // // tell all the creatures to recompute their paths
+        // for (var c in creatures) {
+        //     creatures[c].recomputePath();
+        // }
     }
 
-    initGrid(grid, world, gridWidth, gridHeight) {
-        for (var x = 0; x < gridWidth; x++) {
+    findPathIterative(startX, startY) {
+        // start off by making a deep copy of the entire array
+        var gridCopy = this.makeDeepCopy(this.grid);
+
+        // assume we need to make 0 changes to the pathing info in the grid - this is important
+        // since if this number fails to change during the computation phase below we can assume
+        // that we have computed a valid optimal path to the end cell
+        var numChanges = 0;
+
+        // visit every cell in the grid
+        for (var y = 0; y < this.grid.length; y++) {
+            for (var x = 0; x < this.grid[y].length; x++) {
+                // only need to do something if this is tile is not solid or we know pathing info for the tile already
+                if (this.grid[y][x].solid === false && this.grid[y][x].stepsToEnd == -1) {
+                    // check element: RIGHT
+                    if (x < this.grid[y].length - 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (this.grid[y][x + 1].solid === false && this.grid[y][x + 1].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[y][x].stepsToEnd = this.grid[y][x + 1].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x + 1;
+                            gridCopy[y][x].nextY = y;
+                            gridCopy[y][x].dx = 1;
+                            gridCopy[y][x].dy = 0;
+                            gridCopy[y][x].nextDirection = "right";
+
+                            if (this.checkEnd(x + 1, y, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: LEFT
+                    if (x >= 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (this.grid[y][x - 1].solid === false && this.grid[y][x - 1].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[y][x].stepsToEnd = this.grid[y][x - 1].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x - 1;
+                            gridCopy[y][x].nextY = y;
+                            gridCopy[y][x].dx = -1;
+                            gridCopy[y][x].dy = 0;
+                            gridCopy[y][x].nextDirection = "left";
+
+                            if (this.checkEnd(x - 1, y, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: DOWN
+                    if (y < this.grid.length - 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (this.grid[y + 1][x].solid === false && this.grid[y + 1][x].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[y][x].stepsToEnd = this.grid[y + 1][x].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x;
+                            gridCopy[y][x].nextY = y + 1;
+                            gridCopy[y][x].dx = 0;
+                            gridCopy[y][x].dy = 1;
+                            gridCopy[y][x].nextDirection = "down";
+
+                            if (this.checkEnd(x, y + 1, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+
+                    // check element: UP
+                    if (y >= 1) {
+                        // is it solid and do we know the pathfinding info for this tile?
+                        if (this.grid[y - 1][x].solid === false && this.grid[y - 1][x].stepsToEnd >= 0) {
+                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
+                            gridCopy[y][x].stepsToEnd = this.grid[y - 1][x].stepsToEnd + 1;
+                            gridCopy[y][x].nextX = x;
+                            gridCopy[y][x].nextY = y - 1;
+                            gridCopy[y][x].dx = 0;
+                            gridCopy[y][x].dy = -1;
+                            gridCopy[y][x].nextDirection = "up";
+
+                            if (this.checkEnd(x, y - 1, startX, startY)) {
+                                return 0;
+                            }
+
+                            numChanges++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // update the grid with the copy that we made
+        this.grid = gridCopy;
+
+        // tell the caller how many changes we made (if 0 the caller will stop the 'while' loop and a path has been computed)
+        return numChanges;
+    }
+
+    checkEnd(x1, y1, x2, y2) {
+        if (x1 === x2 && y1 === y2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    makeDeepCopy(g) {
+        var gridCopy = [];
+
+        for (var y = 0; y < g.length; y++) {
             var newRow = [];
-            for (var y = 0; y < gridHeight; y++) {
+
+            for (var x = 0; x < g[y].length; x++) {
+                var newObj = {};
+
+                for (var property in g[y][x]) {
+                    newObj[property] = g[y][x][property];
+                }
+
+                newRow.push(newObj);
+            }
+
+            gridCopy.push(newRow);
+        }
+
+        return gridCopy;
+    }
+
+    initGrid(world, gridWidth, gridHeight) {
+        for (var y = 0; y < gridHeight; y++) {
+            var newRow = [];
+            for (var x = 0; x < gridWidth; x++) {
                 // each cell in our grid holds an object to define its color, whether it is solid, and pathing info, including pointers to the next cell that will bring us closer to the optimal path to
                 // the desired end point of the maze
                 // we assume at the beginning that we don't know how far it is to get to the end (-1)
                 // and we default these pointers to "unknown"
                 newRow.push({ solid: isSolid(world[y][x]), stepsToEnd: -1, nextX: "unknown", nextY: "unknown", nextDirection: -1 });
             }
-            grid.push(newRow);
+            this.grid.push(newRow);
         }
     }
+
+    // displayAndMove() {
+
+    // }
+
+    display() {
+        if (!this.dead) {
+            fill(255, 0, 0);
+            noStroke();
+            ellipse(this.x + offsetX, this.y + offsetY, 10, 10);
+        }
+        for (let y = 0; y < this.grid.length; y++) {
+            for (let x = 0; x < this.grid[y].length; x++) {
+                fill(255, 255, 255, 100);
+                textAlign(CENTER);
+                // this.grid[y][x].nextDirection
+                // x + ", " + y
+                // this.grid[y][x].solid
+                // text(this.grid[y][x].stepsToEnd, x * worldTileSize + worldTileSize / 2 + offsetX,
+                //     y * worldTileSize + worldTileSize / 2 + offsetY);
+            }
+        }
+    }
+
+    recomputePath() {
+        // compute new node value
+        this.nodeX = int(this.x / worldTileSize);
+        this.nodeY = int(this.y / worldTileSize);
+
+        // add this to our node history
+        this.nodeHistory.push([this.nodeX, this.nodeY]);
+
+        // make sure we aren't stuck in a solid tile!
+        if (this.grid[this.nodeY][this.nodeX].solid) {
+
+            // find the most recently visited node that is not solid and move back there
+            for (var i = this.nodeHistory.length - 1; i >= 0; i--) {
+                if (grid[this.nodeHistory[i][0]][this.nodeHistory[i][1]].solid === false) {
+                    // move back to this previous node
+                    this.desiredX = this.nodeHistory[i][0] * worldTileSize + worldTileSize / 2;
+                    this.desiredY = this.nodeHistory[i][1] * worldTileSize + worldTileSize / 2;
+                    break;
+                }
+            }
+
+            console.log("STUCK!");
+        }
+        else {
+            // compute new desired value
+            this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
+            this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
+        }
+    }
+
+    move() {
+        // if (!this.dead) {
+        // move based on current movement vector
+        if (this.x < this.desiredX) {
+            this.x += 1;
+        }
+        else if (this.x > this.desiredX) {
+            this.x -= 1;
+        }
+        if (this.y < this.desiredY) {
+            this.y += 1;
+        }
+        else if (this.y > this.desiredY) {
+            this.y -= 1;
+        }
+
+        // have we reached our new position?  if so, compute a new node value
+        if (dist(this.x, this.y, this.desiredX, this.desiredY) < 2) {
+            // snap to our desired position
+            this.x = this.desiredX;
+            this.y = this.desiredY;
+
+            // note this position
+            this.nodeHistory.push([this.nodeX, this.nodeY]);
+
+            // see where we need to go next!
+            this.recomputePath();
+        }
+    }
+    // }
 }
