@@ -57,8 +57,8 @@ let inventoryTileSize = 32;
 let playerTileSizeX = 32, playerTileSizeY = 32;
 
 // offsets for screen scrolling
-let offsetX = 0;
-let offsetY = -200;
+let offsetX = -495;
+let offsetY = -685;
 let minOffsetX, minOffsetY;
 
 // The farm world 
@@ -380,7 +380,13 @@ function draw() {
         })
         showProduceInventory();
         displayTime();
+        textAlign(CENTER);
+        fill(0);
+        textSize(15);
+        text("x,y"+ player.x + " " + player.y, 50,60);
+        
     }
+
 
     if (stage === 2) {
         background(255);
