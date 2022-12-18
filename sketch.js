@@ -380,10 +380,7 @@ function draw() {
         })
         showProduceInventory();
         displayTime();
-        textAlign(CENTER);
-        fill(0);
-        textSize(15);
-        text("x,y"+ player.x + " " + player.y, 50,60);
+        
         
     }
 
