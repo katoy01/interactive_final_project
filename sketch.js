@@ -13,6 +13,8 @@ let inventoryArtwork;
 let inventoryArray = [];
 let inventoryTiles = [];
 let displayItems = [];
+let emotes = [];
+let nPCs = [];
 
 let inventoryItems;
 let cornSeeds;
@@ -153,6 +155,31 @@ let world = [
     //^40th row
 ]
 
+let kitchen = [
+    [178, 179, 180, 179, 180, 179, 180, 179, 180, 181],
+    [14, 76, 77, 15, 15, 16, 17, 72, 74, 75],
+    [28, 90, 91, 29, 29, 30, 31, 86, 88, 89],
+    [22, 23, 24, 23, 24, 23, 24, 23, 102, 89],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 103],
+    [22, 23, 24, 23, 24, 23, 24, 23, 6, 7],
+    [36, 37, 38, 39, 40, 39, 40, 39, 20, 21],
+    [22, 23, 24, 23, 24, 23, 24, 23, 34, 35],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41],
+    [22, 23, 24, 23, 24, 23, 24, 23, 24, 27],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41],
+    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
+    [0, 0, 17, 15, 15, 16, 17, 72, 74, 75,],
+    [28, 90, 91, 29, 29, 30, 31, 86, 88, 89,],
+    [22, 23, 24, 23, 24, 23, 24, 23, 102, 89,],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 103,],
+    [22, 23, 24, 23, 24, 23, 24, 23, 6, 7,],
+    [36, 37, 38, 39, 40, 39, 40, 39, 20, 21,],
+    [22, 23, 24, 23, 24, 23, 24, 23, 34, 35,],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41,],
+    [22, 23, 24, 23, 24, 23, 24, 23, 24, 27,],
+    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41]
+]
+
 
 // Overlay for the world
 let overlay = [];
@@ -205,6 +232,12 @@ let animalInfoAll = {
     }
 }
 
+// Stores information for all NPCs
+let npcInfoAll = [
+    {},
+    {},
+];
+
 
 /**
  * p5 FUNCTIONS
@@ -242,6 +275,13 @@ function preload() {
     chicks = loadSound("./assets/sound/chicks.wav");
     clickSound = loadSound("./assets/sound/click.wav");
     field_theme = loadSound('./assets/sound/field_theme.wav');
+
+    emotes[0] = loadImage('./assets/image/emotions/love.png');
+    emotes[1] = loadImage('./assets/image/emotions/happy.png');
+    emotes[2] = loadImage('./assets/image/emotions/pleased.png');
+    emotes[3] = loadImage('./assets/image/emotions/relaxed.png');
+    emotes[4] = loadImage('./assets/image/emotions/amused.png');
+    emotes[5] = loadImage('./assets/image/emotions/embarrassed.png');
 }
 
 // Create canvas, build world and overlay,
@@ -272,6 +312,9 @@ function setup() {
     for (let i of inventoryTiles) {
         i.resize(inventoryTileSize, inventoryTileSize);
     }
+    for (let i of emotes) {
+        i.resize(230, 200);
+    }
 
     animalInfoAll['cow'].img = cow_brownArt;
     animalInfoAll['cowBaby'].img = cow_baby_brownArt;
@@ -296,7 +339,7 @@ function setup() {
         let destX, destY;
         do {
             destX = floor(random(30, 50)), destY = floor(random(5, 20));
-        } while (isSolid(world[destY, destX]))
+        } while (isSolid(world[destY][destX]))
         let customer = new Customer(9, 8, destX, destY, world);
         customerArr.push(customer);
     }
@@ -363,7 +406,7 @@ function draw() {
         background(113, 143, 63);
         push();
         translate(offsetX, offsetY);
-        drawWorld();
+        drawWorld(world);
         pop();
 
         // the character will always be drawn in the middle of the screen
@@ -373,13 +416,14 @@ function draw() {
         });
         animalArr.forEach(animal => {
             animal.moveAndDisplay();
+            animal.displayEmote();
         })
         customerArr.forEach(customer => {
             customer.display();
             customer.move();
         })
-        showProduceInventory();
         displayTime();
+        showProduceInventory();
     }
 
     if (stage === 2) {
@@ -403,6 +447,14 @@ function draw() {
         }
         fill(255);
     }
+
+    if (stage === 3) {
+        background(113, 143, 63);
+        push();
+        // translate(offsetX, offsetY);
+        drawWorld(kitchen);
+        pop();
+    }
 }
 
 
@@ -411,7 +463,7 @@ function draw() {
  */
 
 // Draw the entire world using the 2D array above
-function drawWorld() {
+function drawWorld(world) {
     for (let y = 0; y < world.length; y++) {
         for (let x = 0; x < world[y].length; x++) {
             // extract the tile here
@@ -632,11 +684,14 @@ function showProduceInventory() {
 
 // let lock = 1;
 let ampm = 1;
-let startTime = 6;
+let startTime = 7;
 let secToMin = 2;
+let alphaNum = 0;
+let lerpNum = 0;
 function displayTime() {
+    fill(255);
     let secondsPassed = millis() / 1000, minutesPassed = (int)(secondsPassed * secToMin);
-    let hoursNum = (int)(startTime + ((minutesPassed / 60))) % 24 + 1;
+    let hoursNum = (int)(startTime + ((minutesPassed / 60))) % 24;
     let minsNum = (minutesPassed % 60);
     if (hoursNum >= 12 && hoursNum < 24) {
         ampm = 0;
@@ -653,14 +708,40 @@ function displayTime() {
 
     // slowly get dark... get red then get dark
     // From 6PM to 8PM 18 --> 20
-    if (hoursNum >= 18 && hoursNum <= 20 && ampm === 0) {
-        fill('rgba(253, 94, 83, 0.15)');
+    let sunset = color(253, 94, 83);
+    let dusk = color(78, 84, 129);
+    if (hoursNum >= 18 && hoursNum <= 20) {
+        if (hoursNum === 18) {
+            alphaNum = minsNum * (50 / 60);
+        } else {
+            alphaNum = 50;
+        }
+        sunset.setAlpha(alphaNum);
+        fill(sunset);
         rect(0, 0, width, height);
     }
     // From 9PM to 6AM  21 --> 6
-    else if ((hoursNum >= 21) || (hoursNum <= 6)) {
-        fill('rgba(78, 84, 129, 0.3)');
+    else if ((hoursNum >= 21) || (hoursNum <= 5)) {
+        if (hoursNum === 21) {
+            lerpNum = minsNum * (1 / 60);
+        } else {
+            lerpNum = 1;
+        }
+        colorMode(RGB);
+        let moonlight = lerpColor(sunset, dusk, lerpNum);
+        moonlight.setAlpha(50);
+        fill(moonlight);
         rect(0, 0, width, height);
+    }
+    else if ((hoursNum <= 6)) {
+        alphaNum = (60 - minsNum) * (50 / 60);
+        dusk.setAlpha(alphaNum);
+        fill(dusk);
+        rect(0, 0, width, height);
+    }
+    else {
+        alphaNum = 0;
+        lerpNum = 0;
     }
 }
 
@@ -876,6 +957,14 @@ class Animal {
         this.tilesPerRow = this.animalInfo.img.width / this.animalInfo.tileSize;
         this.walking = false;
         this.speed = 0.2;
+        this.emote = 0;
+        this.emoteTimer = 0;
+        this.maxEmoteTimer = 60;
+        this.emoting = false;
+        this.emoteCoolDown = 0;
+        this.maxEmoteCoolDown = 100;
+        this.itemCoolDown = 0;
+        this.maxItemCoolDown = 60;
     }
 
     // there are no animals or players at the place the animal is trying to move
@@ -959,30 +1048,36 @@ class Animal {
                 }
             }
         }
-        if (this.animalName === "cow") {
-            milk.amount = milk.amount + 1;
-            console.log(milk.amount);
-            adultMoo.play();
-
-        }
-        if (this.animalName === "cowBaby") {
-            calfMoo.play();
-
-        }
-        if (this.animalName === "chicken") {
-            eggs.amount = eggs.amount + 1;
-            console.log(eggs.amount);
-            adultChicken.play();
-        }
-        if (this.animalName === "chickenBaby") {
-            chicks.play();
-
+        if (this.itemCoolDown <= 0) {
+            if (this.animalName === "cow") {
+                milk.amount = milk.amount + 1;
+                console.log(milk.amount);
+                adultMoo.play();
+            }
+            if (this.animalName === "cowBaby") {
+                calfMoo.play();
+            }
+            if (this.animalName === "chicken") {
+                eggs.amount = eggs.amount + 1;
+                console.log(eggs.amount);
+                adultChicken.play();
+            }
+            if (this.animalName === "chickenBaby") {
+                chicks.play();
+            }
+            this.itemCoolDown = this.maxItemCoolDown;
         }
         this.spritePos = 0;
         this.currentFrames = 0;
         this.walkingTimer = 0;
         this.restingTimer = 0;
         this.walking = false;
+        if (this.emoteCoolDown <= 0) {
+            this.emoteTimer = 0;
+            this.emoting = true;
+            this.emote = floor(random(6));
+            this.emoteCoolDown = this.maxEmoteCoolDown;
+        }
     }
 
     // Animals change direction and move randomly in four directions (or sleeps) after a certain amount of time
@@ -1080,6 +1175,27 @@ class Animal {
                     this.walking = true;
                 }
             }
+        }
+        imageMode(CORNER);
+    }
+
+    // Display emote on the right left of character
+    displayEmote() {
+        imageMode(CENTER);
+        if (this.emoting) {
+            image(emotes[this.emote], this.x + offsetX + this.animalInfo.tileSize / 2, this.y + offsetY - this.animalInfo.tileSize / 4, 27, 27);
+            if (this.emoteTimer < this.maxEmoteTimer) {
+                this.emoteTimer++;
+            } else {
+                this.emoteTimer = 0;
+                this.emoting = false;
+            }
+        }
+        if (this.emoteCoolDown >= 0) {
+            this.emoteCoolDown--;
+        }
+        if (this.itemCoolDown >= 0) {
+            this.itemCoolDown--;
         }
         imageMode(CORNER);
     }
@@ -1289,11 +1405,28 @@ class Customer {
 
         this.nodeHistory = [];
         this.nodeHistory.push([this.nodeX, this.nodeY]);
+
+        this.dead = false;
+        this.walking = false;
+
+        this.charID = 0;
+        this.direction = 0;
+        this.npcInfo = npcInfoAll[this.charID];
+        this.spritePos = 0;
+        this.currentFrames = 0;
+        this.maxFrames = 20;
+
+        this.emote = 0;
+        this.emoteTimer = 0;
+        this.maxEmoteTimer = 60;
+        this.emoting = false;
+        this.emoteCoolDown = 0;
+        this.maxEmoteCoolDown = 100;
     }
 
     findPaths(startX, startY, endX, endY) {
-        console.log(startX, startY, endX, endY);
-        console.log(isSolid(world[endY][endX]));
+        // console.log(startX, startY, endX, endY);
+        // console.log(isSolid(world[endY][endX]));
 
         // step 1: clear all existing pathfinding information in the grid
         for (var i = 0; i < this.grid.length; i++) {
@@ -1477,27 +1610,23 @@ class Customer {
         }
     }
 
-    // displayAndMove() {
-
-    // }
-
     display() {
         if (!this.dead) {
             fill(255, 0, 0);
             noStroke();
             ellipse(this.x + offsetX, this.y + offsetY, 10, 10);
         }
-        for (let y = 0; y < this.grid.length; y++) {
-            for (let x = 0; x < this.grid[y].length; x++) {
-                fill(255, 255, 255, 100);
-                textAlign(CENTER);
-                // this.grid[y][x].nextDirection
-                // x + ", " + y
-                // this.grid[y][x].solid
-                // text(this.grid[y][x].stepsToEnd, x * worldTileSize + worldTileSize / 2 + offsetX,
-                //     y * worldTileSize + worldTileSize / 2 + offsetY);
-            }
-        }
+        // for (let y = 0; y < this.grid.length; y++) {
+        //     for (let x = 0; x < this.grid[y].length; x++) {
+        //         fill(255, 255, 255, 100);
+        //         textAlign(CENTER);
+        //         this.grid[y][x].nextDirection
+        //         x + ", " + y
+        //         this.grid[y][x].solid
+        //         text(this.grid[y][x].stepsToEnd, x * worldTileSize + worldTileSize / 2 + offsetX,
+        //             y * worldTileSize + worldTileSize / 2 + offsetY);
+        //     }
+        // }
     }
 
     recomputePath() {
@@ -1531,7 +1660,6 @@ class Customer {
     }
 
     move() {
-        // if (!this.dead) {
         // move based on current movement vector
         if (this.x < this.desiredX) {
             this.x += 1;
@@ -1559,5 +1687,50 @@ class Customer {
             this.recomputePath();
         }
     }
-    // }
+
+    // Animals change direction and move randomly in four directions (or sleeps) after a certain amount of time
+    // They check if the place they are trying to go is okay to go to, has constant speed
+    // Also inclues frame animation
+    moveAndDisplay() {
+        imageMode(CENTER);
+        // the chicken png has the left and right images flipped from the others :(
+        // how inconvenient
+
+        // drawTile(nPCs[this.img], (this.direction * this.npcInfo.tilesPerRow) + this.spritePos,
+        //         this.npcInfo.tileSize, this.npcInfo.tileSize,
+        //         this.x + offsetX, this.y + offsetY);
+
+        // the animal is walking
+        if (this.walking) {
+            if (this.currentFrames >= this.maxFrames) {
+                if (this.spritePos + 1 < this.tilesPerRow) {
+                    this.spritePos++;
+                } else {
+                    this.spritePos = 0;
+                }
+                this.currentFrames = 0;
+            }
+            this.currentFrames++;
+        } else {
+            this.spritePos = 0;
+        }
+        imageMode(CORNER);
+    }
+
+    displayEmote() {
+        imageMode(CENTER);
+        if (this.emoting) {
+            image(emotes[this.emote], this.x + offsetX + this.npcInfo.tileSize / 2, this.y + offsetY - this.npcInfo.tileSize / 4, 27, 27);
+            if (this.emoteTimer < this.maxEmoteTimer) {
+                this.emoteTimer++;
+            } else {
+                this.emoteTimer = 0;
+                this.emoting = false;
+            }
+        }
+        if (this.emoteCoolDown >= 0) {
+            this.emoteCoolDown--;
+        }
+        imageMode(CORNER);
+    }
 }
