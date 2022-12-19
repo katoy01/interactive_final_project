@@ -34,6 +34,7 @@ let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
 let table, chair;
 let storefront;
+let door;
 
 let arrow;
 let cheesybread_bubble, eggsalad_bubble, bruschetta_bubble;
@@ -114,7 +115,7 @@ let world = [
     [13, 2369, 2370, 1205, 909, 909, 1060, 4444, 1649, 1353, 1353, 1353, 1353, 1353, 1353, 1353, 1504, 607, 607, 3998, 3999, 607, 1649, 1353, 1353, 1353, 1353, 1353, 1353, 1353, 1353, 1504, 607, 3850, 3851, 607, 4152, 1205, 1060, 4152, 607, 607, 4152, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1391, 1392, 1393, 1394, 1395, 3220, 3221, 3222, 3223, 3224, 3225, 908, 908, 2732, 2733, 2734, 2882, 908, 908, 1697, 4446, 607, 607, 2812, 2369, 2369, 13],
     //end row of farm plots 
     //                                         10                                              20                                              30                                               40                                        50                                           60                                               70                                           80
-    [13, 2369, 2370, 1205, 909, 909, 1060, 4444, 1501, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1500, 607, 3850, 3851, 607, 607, 1501, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1500, 607, 3998, 3999, 607, 4004, 1205, 1060, 4004, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1539, 1540, 1541, 1542, 1543, 607, 3369, 3370, 3371, 3372, 908, 908, 908, 908, 908, 908, 908, 908, 908, 1697, 4446, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 1205, 909, 909, 1060, 4444, 1501, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1500, 607, 3850, 3851, 607, 607, 1501, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1502, 1500, 607, 3998, 3999, 607, 4004, 1205, 1060, 4004, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1539, 1540, 1541, 1542, 1543, 4593, 3369, 3370, 3371, 3372, 908, 908, 908, 908, 908, 908, 908, 908, 908, 1697, 4446, 607, 607, 2812, 2369, 2369, 13],
     //^10th row
     //                                         10                                               20                                                 30                                                40                                                50                                           60                                               70                                           80
     //end corner row of fence                                     4299 is gate                                                                                                                                               4591 below                                                                                                                      1060 is side dirt
@@ -169,7 +170,7 @@ let world = [
     //                                                    10                                                          20                                                          30                                                          40                                                   50                                                       60                                                70                                           80    
     [13, 2369, 2370, 4155, 7106, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 1058, 607, 7254, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2318, 2319, 2320, 2321, 2322, 1800, 1936, 1936, 1936, 1936, 1936, 1936, 1945, 607, 4004, 607, 607, 2812, 2369, 2369, 13],
     //                                                10                                          20                                      30                                      40                                      50                                              60                                                70                                           80    
-    [13, 2369, 2370, 607, 7254, 3856, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2466, 2467, 2468, 2469, 2470, 1800, 1936, 1936, 1929, 1947, 1947, 1947, 1949, 607, 607, 607, 607, 2812, 2369, 2369, 13],
+    [13, 2369, 2370, 3856, 7254, 3856, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 3850, 3851, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1800, 1936, 1936, 1936, 1936, 1936, 1945, 2466, 2467, 2468, 2469, 2470, 1800, 1936, 1936, 1929, 1947, 1947, 1947, 1949, 607, 607, 607, 607, 2812, 2369, 2369, 13],
     //                                       10                                          20                                      30                                      40                                      50                                             60                                               70                     plain grass               80    
     [13, 2369, 2369, 2371, 2222, 4155, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 3998, 3999, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 607, 1948, 1936, 1936, 1936, 1936, 1936, 1797, 1798, 1946, 1939, 1802, 1798, 1796, 1936, 1936, 1945, 607, 607, 607, 607, 607, 607, 607, 607, 2368, 2369, 2369, 13],
     //                                          10                                                20                                                30                                                40                                             50                                            60                                               70                                               80    
@@ -364,6 +365,8 @@ function preload() {
     pot_full = loadImage('./assets/image/pot_full.png');
 
     recipeBookPNG = loadImage('./assets/image/recipebook.png');
+    fridge = loadImage('./assets/image/fridge_flipped.png');
+    door = loadImage('./assets/image/door.png');
 }
 
 // Create canvas, build world and overlay,
@@ -502,6 +505,10 @@ function keyPressed() {
     else if (stage === 3) {
         if (keyCode === 13) {
             player.changeEnvironment();
+            if (floor((player.x - kitchenOffsetX) / kitchenTileSize) === 8
+                && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7) {
+                changeStage();
+            }
         }
         else if (keyCode >= 49 && keyCode <= 56) {
             ingredientSelected = true;
@@ -532,7 +539,6 @@ function changeStage() {
 
 // Has start screen (stage = 0), game screen (stage = 1), and inventory screen (stage = 2)
 // Displays world, overlay, player, animals, and any plants that were planted and are growing
-let lock = 0;
 function draw() {
 
     if (stage === 0) {
@@ -604,10 +610,12 @@ function draw() {
         player.tileSize = kitchenTileSize;
         player.moveAndDisplayKitchen();
 
-        if (!lock) {
-            let customer = new NPC(8, 7, 1, 3, kitchenTileSize, 2);
-            customerArr.push(customer);
-            lock = 1;
+        if (random(600) < 1 && customerArr.length < 2) {
+            if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 8
+                && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7)) {
+                let customer = new NPC(8, 7, 1, 3, kitchenTileSize, 2);
+                customerArr.push(customer);
+            }
         }
         customerArr.forEach(customer => {
             customer.displayKitchen();
@@ -651,6 +659,16 @@ function drawWorld() {
             drawTile(tilesetArtwork, id, worldTileSize, worldTileSize,
                 x * worldTileSize, y * worldTileSize, worldTileSize, worldTileSize);
 
+            // if (!isSolid(id)) {
+            //     textAlign(CENTER);
+            //     textSize(10);
+            //     text(id, x * worldTileSize + worldTileSize / 2, y * worldTileSize + worldTileSize / 2)
+            //     if (isSolid(world[y - 1][x]) && isSolid(world[y + 1][x])
+            //         && isSolid(world[y][x + 1]) && isSolid(world[y][x - 1])) {
+            //         console.log(id);
+            //     }
+            // }
+
             // also draw the overlay here
             let idOverlay = overlay[y][x];
             drawTile(tilesetArtwork, idOverlay, worldTileSize, worldTileSize,
@@ -669,11 +687,25 @@ function drawKitchen() {
 
             // also draw the overlay here
             let idOverlay = overlayKitchen[y][x];
-            drawTile(kitchenArtWork, idOverlay, worldTileSize, worldTileSize,
-                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
+            // flip the fridge
+            if (idOverlay === 3 || idOverlay === 10) {
+                if (idOverlay === 10) {
+                    drawTile(fridge, 0, fridge.width, fridge.height,
+                        x * kitchenTileSize, (y - 1) * kitchenTileSize, kitchenTileSize, kitchenTileSize * 2);
+                }
+            } else {
+                drawTile(kitchenArtWork, idOverlay, worldTileSize, worldTileSize,
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
+            }
+            // draw book on counter
             if (idOverlay === 7) {
                 drawTile(recipeBookPNG, 0, recipeBookPNG.width, recipeBookPNG.height,
                     x * kitchenTileSize, y * kitchenTileSize - kitchenTileSize * (3 / 4), kitchenTileSize, kitchenTileSize);
+            }
+            // draw door
+            if (x === 9 && y === 8) {
+                drawTile(door, 0, door.width, door.height,
+                    x * kitchenTileSize, y * kitchenTileSize, door.width, kitchenTileSize);
             }
         }
     }
@@ -821,7 +853,14 @@ function isSolid(id) {
         || id == 2467 || id == 2468 || id == 2469 || id == 2470 || id == 397 || id == 398 || id == 399 || id == 400 || id == 544 || id == 545
         || id == 546 || id == 546 || id == 547 || id == 548 || id == 692 || id == 693 || id == 694 || id == 695 || id == 696 || id == 840
         || id == 841 || id == 842 || id == 843 || id == 844 || id == 988 || id == 989 || id == 900 || id == 991 || id == 992
-        || id == 1936 || id == 1947 || id == 2226 || id == 2369 || id == 4594 || id == 2222 || id == 2732 || id == 2733 || id == 2734 || id == 1640) {
+        || id == 1936 || id == 1947 || id == 2226 || id == 2369 || id == 4594 || id == 2222 || id == 2732 || id == 2733 || id == 2734 || id == 1640
+        || id == 1943 || id == 1799 || id == 1797 || id == 1798 || id == 1802 || id == 1798 || id == 1796 || id == 1399 || id == 1400
+        || id == 3848 || id == 3849 || id == 3996 || id == 3997 || id == 2377 || id == 3222 || id == 3223 || id == 3370 || id == 3371
+        || id == 3220 || id == 2518 || id == 1244 || id == 1245 || id == 1246 || id == 1392 || id == 1393 || id == 1394 || id == 1395
+        || id == 1540 || id == 1541 || id == 1542 || id == 1543 || id == 2960 || id == 1398 || id == 2521 || id == 3015 || id == 3016
+        || id == 3017 || id == 3018 || id == 3019 || id == 3163 || id == 3164 || id == 3165 || id == 3166 || id == 3167
+        || id == 3311 || id == 3312 || id == 3313 || id == 3314 || id == 3315 || id == 3459 || id == 3460 || id == 3461
+        || id == 3462 || id == 3463 || id == 2371 || id == 3855) {
         return true;
     }
     return false;
@@ -942,6 +981,12 @@ function interactOverlay(x, y) {
                 menuPopUp = !menuPopUp;
             }
         }
+        else if (getOverlayTileAtPosition(x, y) === 8) {
+            if (player.holding) {
+                player.holding = false;
+                player.holdingPlate = -1;
+            }
+        }
     }
 }
 
@@ -1057,16 +1102,12 @@ function displayInsidePot(barStartX, barStartY, dist) {
 let menuShowing = 0;
 function showMenu() {
     imageMode(CENTER);
-
     let img = pot.recipeBook[menuShowing].menu;
     drawTile(img, 0, img.width, img.height, width / 2, height / 2, width / 2, height / 2);
-
-
     imageMode(CORNER);
 }
 
 
-// let lock = 1;
 let ampm = 1;
 let startTime = 7;
 let secToMin = 2;
@@ -2350,6 +2391,7 @@ class Pot {
                 this.cooking = 2;
                 this.cookingTimer = 0;
                 cookingSound.stop();
+                ding.play();
             }
         } else if (this.cooking === 2) {
             let img = this.recipeBook[this.recipe].inPot;
