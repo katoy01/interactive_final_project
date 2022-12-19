@@ -325,7 +325,7 @@ function preload() {
     nPCs[1] = loadImage('./assets/image/npc2.png');
     nPCs[2] = loadImage('./assets/image/npc3.png');
     eggsalad = loadImage('./assets/image/eggsalad.png');
-    bruschetta = loadImage('./assets/image/bruschetta.png');
+    // bruschetta = loadImage('./assets/image/bruschetta.png');
     cheesebread = loadImage('./assets/image/cheesebread.png');
     cheesebread_plate = loadImage('./assets/image/cheesebread_plate.png');
     eggsalad_plate = loadImage('./assets/image/eggsalad_plate.png');
@@ -399,15 +399,12 @@ function setup() {
     chickenBaby = new Animal(68, 15, 'chickenBaby');
     animalArr.push(cow, cowBaby, chicken, chickenBaby);
 
-    // for (let i = 0; i < 5; i++) {
-    //     let from = worldNotSolid[floor(random(worldNotSolid.length))];
-    //     let to = worldNotSolid[floor(random(worldNotSolid.length))];
-    //     let customer = new NPC(from[0], from[1], to[0], to[1], world);
-    //     customerArr.push(customer);
-    // }
-
-    let customer = new NPC(8, 5, 10, 9, world);
-    customerArr.push(customer);
+    for (let i = 0; i < 5; i++) {
+        let from = worldNotSolid[floor(random(worldNotSolid.length))];
+        let to = worldNotSolid[floor(random(worldNotSolid.length))];
+        let customer = new NPC(from[0], from[1], to[0], to[1], world);
+        customerArr.push(customer);
+    }
 
     // Stores all the items in inventory
     inventoryArray = [
@@ -1614,6 +1611,9 @@ class NPC {
     display() {
         imageMode(CENTER);
         let progression = [1, 0, 1, 2];
+        if (this.charID === 1 && this.direction === 3) {
+            progression = [1, 0];
+        }
 
         // draw image
         drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
