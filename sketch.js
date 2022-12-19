@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 3;
+let stage = 1;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -2072,17 +2072,14 @@ class NPC {
     }
 
     newDest() {
-        this.walking = false;
-
         this.nodeHistory = [];
-        this.nodeHistory.push([this.nodeX, this.nodeY]);
+        this.walking = false;
 
         let to = worldNotSolid[floor(random(worldNotSolid.length))];
         this.destX = to[0], this.destY = to[1];
 
         this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
-        this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
-        this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
+        this.recomputePath();
     }
 
     // If the player presses `enter` in front of the npc
@@ -2181,7 +2178,7 @@ class NPC {
             // look left
             this.direction = 1;
         }
-        if (this.y < this.desiredY) {
+        else if (this.y < this.desiredY) {
             if (this.noPlayer(this.x, this.y + this.npcInfo.tileSizeY / 2)) {
                 this.y += 1;
             }
@@ -2194,6 +2191,9 @@ class NPC {
             }
             // look up
             this.direction = 3;
+        }
+        else {
+            this.newDest();
         }
 
         // have we reached our new position?  if so, compute a new node value
