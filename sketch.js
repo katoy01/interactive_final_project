@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 3;
+let stage = 1;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -421,7 +421,7 @@ function mouseClicked() {
         stage = 1;
         clickSound.play();
     }
-    if (stage === 2 && selectedStatus === true) {
+    else if (stage === 2 && selectedStatus === true) {
         player.changeEnvironment();
         stage = 1;
         selectedStatus = false;
@@ -435,7 +435,7 @@ function keyPressed() {
     if (keyCode === 13 && stage === 1) {
         player.changeEnvironment();
     }
-    if (stage === 2) {
+    else if (stage === 2) {
         if (keyCode >= 49 && keyCode <= 56) {
             selectedStatus = true;
             numInventorySelected = keyCode - 49;
@@ -446,7 +446,7 @@ function keyPressed() {
             stage = 1;
         }
     }
-    if (keyCode === 20) {
+    else if (keyCode === 13 && stage === 3) {
         changeStage();
     }
 }
@@ -454,10 +454,12 @@ function keyPressed() {
 function changeStage() {
     if (stage === 1) {
         stage = 3;
+        player.y = height - 30;
     } else if (stage === 3) {
-        player.x = width / 2;
-        player.y = height / 2;
+        player.x = 480;
+        player.y = 340;
         stage = 1;
+        player.direction = 0;
     }
 }
 
@@ -747,42 +749,52 @@ function noCustomers(realX, realY, selfTileSize) {
 
 // Player interacts with overlay at position `x`,`y` (triggered once after pressing `enter` button)
 function interactOverlay(x, y) {
-    // open/ close gate
-    if (getOverlayTileAtPosition(x, y) === 4299) {
-        setOverlayAtPosition(4300, x, y);
-        gate.play();
-    } else if (getOverlayTileAtPosition(x, y) === 4300) {
-        setOverlayAtPosition(4299, x, y);
-        gate.play();
+    if (stage === 1) {
+        // open/ close gate
+        if (getOverlayTileAtPosition(x, y) === 4299) {
+            setOverlayAtPosition(4300, x, y);
+            gate.play();
+        }
+        if (getOverlayTileAtPosition(x, y) === 4300) {
+            setOverlayAtPosition(4299, x, y);
+            gate.play();
+        }
+        // plant or harvest crop
+        if (getWorldTileAtPosition(x, y) === 1353) {
+            if (getOverlayTileAtPosition(x, y) === -1) {
+                stage = 2;
+            }
+            if (getOverlayTileAtPosition(x, y) === 6385) {
+                harvest.play();
+                setOverlayAtPosition(-1, x, y);
+                wheat.amount = wheat.amount + 1;
+            }
+            if (getOverlayTileAtPosition(x, y) === 5645) {
+                harvest.play();
+                setOverlayAtPosition(-1, x, y);
+                corn.amount = corn.amount + 1;
+            }
+            if (getOverlayTileAtPosition(x, y) === 5201) {
+                harvest.play();
+                setOverlayAtPosition(-1, x, y);
+                tomato.amount = tomato.amount + 1;
+            }
+        }
+        if (getWorldTileAtPosition(x, y) === 2468) {
+            console.log("HELLO");
+            changeStage();
+        }
     }
-    // plant or harvest crop
-    if (getWorldTileAtPosition(x, y) === 1353) {
-        if (getOverlayTileAtPosition(x, y) === -1) {
-            stage = 2;
-        }
-        if (getOverlayTileAtPosition(x, y) === 6385) {
-            harvest.play();
-            setOverlayAtPosition(-1, x, y);
-            wheat.amount = wheat.amount + 1;
-        }
-        if (getOverlayTileAtPosition(x, y) === 5645) {
-            harvest.play();
-            setOverlayAtPosition(-1, x, y);
-            corn.amount = corn.amount + 1;
-        }
-        if (getOverlayTileAtPosition(x, y) === 5201) {
-            harvest.play();
-            setOverlayAtPosition(-1, x, y);
-            tomato.amount = tomato.amount + 1;
-        }
-    }
-    if (stage === 2 && selectedStatus === true) {
+    else if (stage === 2 && selectedStatus === true) {
         if (numInventorySelected >= 0 && numInventorySelected <= 2) {
             let plant = new Plant(x, y, inventoryArray[numInventorySelected].plantName);
             plantArr.push(plant);
             plop.play();
             inventoryArray[numInventorySelected].amount--;
         }
+    }
+    else if (stage === 3) {
+
     }
 }
 
@@ -962,7 +974,7 @@ class Player {
 
         // movement
         if (keyIsDown(68)) {
-            ellipse(this.right, this.middleY, 5, 5);
+            // ellipse(this.right, this.middleY, 5, 5);
             let id = getWorldTileAtPosition(this.right, this.middleY);
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolid(id) && !isSolid(id2) && noAnimals(this.right - offsetX, this.middleY - offsetY, this.tileSize)) {
