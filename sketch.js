@@ -754,7 +754,8 @@ function isSolid(id) {
 // Returns true if solid tile, false if not solid
 function isSolidKitchen(id) {
     // return true for all solid tiles
-    if (id === 50) {
+    if (id === 50 || id === 47 || id === 48 || id === 0 || id === 17 ||
+        id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23) {
         return true;
     }
     return false;
