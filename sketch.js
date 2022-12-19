@@ -25,6 +25,18 @@ let eggs;
 let corn;
 let tomato;
 let wheat;
+let eggsalad, bruschetta, cheesebread;
+let cheesebread_plate, eggsalad_plate, bruschetta_plate;
+let dish_pile, dish1, dish2, bowl;
+let npc1, npc2, npc3;
+let pot, table, chair;
+let storefront;
+
+//emotions 
+let amused, angry, annoyed, cool, crying,
+    embarrassed, happy, love,
+    pleased, relaxed, surprised, tired, unimpressed,
+    upset;
 
 let cornSeedsArt, seedsEmpty;
 let wheatSeedsArt;
@@ -312,6 +324,23 @@ function preload() {
     nPCs[0] = loadImage('./assets/image/npc1.png');
     nPCs[1] = loadImage('./assets/image/npc2.png');
     nPCs[2] = loadImage('./assets/image/npc3.png');
+    eggsalad = loadImage('./assets/image/eggsalad.png');
+    bruschetta = loadImage('./assets/image/bruschetta.png');
+    cheesebread = loadImage('./assets/image/cheesebread.png');
+    cheesebread_plate = loadImage('./assets/image/cheesebread_plate.png');
+    eggsalad_plate = loadImage('./assets/image/eggsalad_plate.png');
+    bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
+    dish_pile = loadImage('./assets/image/dish_pile.png');
+    dish1 = loadImage('./assets/image/dish1.png');
+    dish2 = loadImage('./assets/image/dish2.png');
+    bowl = loadImage('./assets/image/bowl.png');
+    npc1 = loadImage('./assets/image/npc1.png');
+    npc2 = loadImage('./assets/image/npc2.png');
+    npc3 = loadImage('./assets/image/npc3.png');
+    pot = loadImage('./assets/image/pot.png');
+    table = loadImage('./assets/image/table.png');
+    chair = loadImage('./assets/image/chair.png');
+    storefront = loadImage('./assets/image/storefront.png');
 }
 
 // Create canvas, build world and overlay,
