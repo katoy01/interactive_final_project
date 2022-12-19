@@ -181,6 +181,16 @@ let kitchen = [
 ]
 
 
+let worldNotSolid = [];
+
+for (let y = 4; y < world.length - 4; y++) {
+    for (let x = 4; x < world[0].length - 4; x++) {
+        if (!isSolid(world[y][x])) {
+            worldNotSolid.push([x, y]);
+        }
+    }
+}
+
 // Overlay for the world
 let overlay = [];
 
@@ -234,8 +244,21 @@ let animalInfoAll = {
 
 // Stores information for all NPCs
 let npcInfoAll = [
-    {},
-    {},
+    {
+        tileSizeX: 32,
+        tileSizeY: 32,
+        tilesPerRow: 3,
+    },
+    {
+        tileSizeX: 23,
+        tileSizeY: 32,
+        tilesPerRow: 6,
+    },
+    {
+        tileSizeX: 32,
+        tileSizeY: 32,
+        tilesPerRow: 3,
+    },
 ];
 
 
@@ -247,6 +270,7 @@ let npcInfoAll = [
 function preload() {
     tilesetArtwork = loadImage('./assets/image/global.png');
     inventoryArtwork = loadImage('./assets/image/global.png');
+
     playerArtwork = loadImage('./assets/image/player.png');
     chicken_babyArt = loadImage('./assets/image/chicken_baby.png');
     chickenArt = loadImage('./assets/image/chicken.png');
@@ -282,6 +306,12 @@ function preload() {
     emotes[3] = loadImage('./assets/image/emotions/relaxed.png');
     emotes[4] = loadImage('./assets/image/emotions/amused.png');
     emotes[5] = loadImage('./assets/image/emotions/embarrassed.png');
+
+    kitchenArtWork = loadImage('./assets/image/kitchen.png');
+
+    nPCs[0] = loadImage('./assets/image/npc1.png');
+    nPCs[1] = loadImage('./assets/image/npc2.png');
+    nPCs[2] = loadImage('./assets/image/npc3.png');
 }
 
 // Create canvas, build world and overlay,
@@ -315,6 +345,10 @@ function setup() {
     for (let i of emotes) {
         i.resize(230, 200);
     }
+    for (let i of nPCs) {
+        i.resize(96, 128);
+    }
+    nPCs[1].resize(138, 128);
 
     animalInfoAll['cow'].img = cow_brownArt;
     animalInfoAll['cowBaby'].img = cow_baby_brownArt;
@@ -335,14 +369,16 @@ function setup() {
     chicken = new Animal(66, 13, 'chicken');
     chickenBaby = new Animal(68, 15, 'chickenBaby');
     animalArr.push(cow, cowBaby, chicken, chickenBaby);
-    for (let i = 0; i < 5; i++) {
-        let destX, destY;
-        do {
-            destX = floor(random(30, 50)), destY = floor(random(5, 20));
-        } while (isSolid(world[destY][destX]))
-        let customer = new Customer(9, 8, destX, destY, world);
-        customerArr.push(customer);
-    }
+
+    // for (let i = 0; i < 5; i++) {
+    //     let from = worldNotSolid[floor(random(worldNotSolid.length))];
+    //     let to = worldNotSolid[floor(random(worldNotSolid.length))];
+    //     let customer = new NPC(from[0], from[1], to[0], to[1], world);
+    //     customerArr.push(customer);
+    // }
+
+    let customer = new NPC(8, 5, 10, 9, world);
+    customerArr.push(customer);
 
     // Stores all the items in inventory
     inventoryArray = [
@@ -355,7 +391,6 @@ function setup() {
         milk = new Item("Milk", 0, inventoryTiles[6]),
         eggs = new Item("Eggs", 0, inventoryTiles[7])
     ];
-    // console.log(inventoryArray);
 }
 
 // Triggers when you click mouse to start game and 
@@ -406,7 +441,7 @@ function draw() {
         background(113, 143, 63);
         push();
         translate(offsetX, offsetY);
-        drawWorld(world);
+        drawWorld(world, tilesetArtwork);
         pop();
 
         // the character will always be drawn in the middle of the screen
@@ -420,7 +455,11 @@ function draw() {
         })
         customerArr.forEach(customer => {
             customer.display();
-            customer.move();
+            if (customer.isAtEnd()) {
+                customer.newDest();
+            } else if (customer.walking) {
+                customer.move();
+            }
         })
         displayTime();
         showProduceInventory();
@@ -452,8 +491,19 @@ function draw() {
         background(113, 143, 63);
         push();
         // translate(offsetX, offsetY);
-        drawWorld(kitchen);
+        drawWorld(kitchen, kitchenArtWork);
         pop();
+
+        // imageMode(CORNER);
+        // image(kitchenArtWork, 0, 0);
+        // let imgID = 0;
+        // for (let y = 0; y < kitchenArtWork.height / worldTileSize; y++) {
+        //     for (let x = 0; x < kitchenArtWork.width / worldTileSize; x++) {
+        //         textAlign(CENTER);
+        //         text(imgID, x * worldTileSize + worldTileSize / 2, y * worldTileSize + worldTileSize / 2);
+        //         imgID++;
+        //     }
+        // }
     }
 }
 
@@ -463,7 +513,9 @@ function draw() {
  */
 
 // Draw the entire world using the 2D array above
-function drawWorld(world) {
+let solids = 0, all = 0;
+let lock = true;
+function drawWorld(world, tilesetArtwork) {
     for (let y = 0; y < world.length; y++) {
         for (let x = 0; x < world[y].length; x++) {
             // extract the tile here
@@ -473,6 +525,14 @@ function drawWorld(world) {
             // also draw the overlay here
             let idOverlay = overlay[y][x];
             drawTile(tilesetArtwork, idOverlay, worldTileSize, worldTileSize, x * worldTileSize, y * worldTileSize);
+
+            if (lock) {
+                if (isSolid(world[y][x])) {
+                    solids++;
+                } else {
+                    all++
+                }
+            }
         }
     }
 }
@@ -602,25 +662,21 @@ function interactOverlay(x, y) {
     if (getWorldTileAtPosition(x, y) === 1353) {
         if (getOverlayTileAtPosition(x, y) === -1) {
             stage = 2;
-            // console.log(inventoryArray);
         }
         if (getOverlayTileAtPosition(x, y) === 6385) {
             harvest.play();
             setOverlayAtPosition(-1, x, y);
             wheat.amount = wheat.amount + 1;
-            // console.log(inventoryArray);
         }
         if (getOverlayTileAtPosition(x, y) === 5645) {
             harvest.play();
             setOverlayAtPosition(-1, x, y);
             corn.amount = corn.amount + 1;
-            // console.log(inventoryArray);
         }
         if (getOverlayTileAtPosition(x, y) === 5201) {
             harvest.play();
             setOverlayAtPosition(-1, x, y);
             tomato.amount = tomato.amount + 1;
-            // console.log(inventoryArray);
         }
     }
     if (stage === 2 && selectedStatus === true) {
@@ -1051,7 +1107,6 @@ class Animal {
         if (this.itemCoolDown <= 0) {
             if (this.animalName === "cow") {
                 milk.amount = milk.amount + 1;
-                console.log(milk.amount);
                 adultMoo.play();
             }
             if (this.animalName === "cowBaby") {
@@ -1059,7 +1114,6 @@ class Animal {
             }
             if (this.animalName === "chicken") {
                 eggs.amount = eggs.amount + 1;
-                console.log(eggs.amount);
                 adultChicken.play();
             }
             if (this.animalName === "chickenBaby") {
@@ -1216,177 +1270,6 @@ class Item {
 }
 
 class NPC {
-    findPaths(grid, startX, startY, endX, endY) {
-        // step 1: clear all existing pathfinding information in the grid
-        for (var i = 0; i < grid.length; i++) {
-            for (var j = 0; j < grid[i].length; j++) {
-                grid[i][j].stepsToEnd = -1;
-                grid[i][j].nextX = "unknown";
-                grid[i][j].nextY = "unknown";
-                grid[i][j].dx = 0;
-                grid[i][j].dy = 0;
-                grid[i][j].nextDirection = -1;
-            }
-        }
-
-        // step 2: mark the end path as 0 steps
-        grid[endY][endX].stepsToEnd = 0;
-        grid[endY][endX].nextX = "none";
-        grid[endY][endX].nextY = "none";
-        grid[endY][endX].dx = 0;
-        grid[endY][endX].dy = 0;
-        grid[endY][endX].nextDirection = -1;
-
-        // step 3: find all this loop keeps calling 'findPathIterative' until all cells in the grid have
-        // pointers to the optimal end path
-        while (true) {
-            if (findPathIterative(grid, startX, startY) === 0) {
-                break;
-            }
-        }
-
-        // // tell all the creatures to recompute their paths
-        // for (var c in creatures) {
-        //     creatures[c].recomputePath();
-        // }
-    }
-
-    findPathIterative(grid, startX, startY) {
-        // start off by making a deep copy of the entire array
-        var gridCopy = makeDeepCopy(grid);
-
-        // assume we need to make 0 changes to the pathing info in the grid - this is important
-        // since if this number fails to change during the computation phase below we can assume
-        // that we have computed a valid optimal path to the end cell
-        var numChanges = 0;
-
-        // visit every cell in the grid
-        for (var y = 0; y < grid.length; y++) {
-            for (var x = 0; x < grid[y].length; x++) {
-                // only need to do something if this is tile is not solid or we know pathing info for the tile already
-                if (grid[y][x].solid === false && grid[y][x].stepsToEnd == -1) {
-                    // check element: RIGHT
-                    if (y < grid.length - 1) {
-                        // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[y][x + 1].solid === false && grid[y][x + 1].stepsToEnd >= 0) {
-                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[y][x].stepsToEnd = grid[y][x + 1].stepsToEnd + 1;
-                            gridCopy[y][x].nextX = x + 1;
-                            gridCopy[y][x].nextY = y;
-                            gridCopy[y][x].dx = 1;
-                            gridCopy[y][x].dy = 0;
-                            gridCopy[y][x].nextDirection = "right";
-
-                            if (checkEnd(x + 1, y, startX, startY)) {
-                                return 0;
-                            }
-
-                            numChanges++;
-                        }
-                    }
-
-                    // check element: LEFT
-                    if (x >= 1) {
-                        // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[y][x - 1].solid === false && grid[y][x - 1].stepsToEnd >= 0) {
-                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[y][x].stepsToEnd = grid[y][x - 1].stepsToEnd + 1;
-                            gridCopy[y][x].nextX = x - 1;
-                            gridCopy[y][x].nextY = y;
-                            gridCopy[y][x].dx = -1;
-                            gridCopy[y][x].dy = 0;
-                            gridCopy[y][x].nextDirection = "left";
-
-                            if (checkEnd(x - 1, y, startX, startY)) {
-                                return 0;
-                            }
-
-                            numChanges++;
-                        }
-                    }
-
-                    // check element: DOWN
-                    if (y < grid[x].length - 1) {
-                        // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[y + 1][x].solid === false && grid[y + 1][x].stepsToEnd >= 0) {
-                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[y][x].stepsToEnd = grid[y + 1][x].stepsToEnd + 1;
-                            gridCopy[y][x].nextX = x;
-                            gridCopy[y][x].nextY = y + 1;
-                            gridCopy[y][x].dx = 0;
-                            gridCopy[y][x].dy = 1;
-                            gridCopy[y][x].nextDirection = "down";
-
-                            if (checkEnd(x, y + 1, startX, startY)) {
-                                return 0;
-                            }
-
-                            numChanges++;
-                        }
-                    }
-
-                    // check element: UP
-                    if (y >= 1) {
-                        // is it solid and do we know the pathfinding info for this tile?
-                        if (grid[y - 1][x].solid === false && grid[y - 1][x].stepsToEnd >= 0) {
-                            // mark this tile with pathfinding info based on the cell we are visiting (+1)
-                            gridCopy[y][x].stepsToEnd = grid[y - 1][x].stepsToEnd + 1;
-                            gridCopy[y][x].nextX = x;
-                            gridCopy[y][x].nextY = y - 1;
-                            gridCopy[y][x].dx = 0;
-                            gridCopy[y][x].dy = -1;
-                            gridCopy[y][x].nextDirection = "up";
-
-                            if (checkEnd(x, y - 1, startX, startY)) {
-                                return 0;
-                            }
-
-                            numChanges++;
-                        }
-                    }
-                }
-            }
-        }
-
-        // update the grid with the copy that we made
-        grid = gridCopy;
-
-        // tell the caller how many changes we made (if 0 the caller will stop the 'while' loop and a path has been computed)
-        return numChanges;
-    }
-
-    checkEnd(x1, y1, x2, y2) {
-        if (x1 === x2 && y1 === y2) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    makeDeepCopy(g) {
-        var gridCopy = [];
-
-        for (var y = 0; y < g.length; y++) {
-            var newRow = [];
-
-            for (var x = 0; x < g[y].length; x++) {
-                var newObj = {};
-
-                for (var property in g[y][x]) {
-                    newObj[property] = g[y][x][property];
-                }
-
-                newRow.push(newObj);
-            }
-
-            gridCopy.push(newRow);
-        }
-
-        return gridCopy;
-    }
-}
-
-class Customer {
     constructor(arrayX, arrayY, destX, destY, world) {
         this.x = arrayX * worldTileSize + worldTileSize / 2;
         this.y = arrayY * worldTileSize + worldTileSize / 2;
@@ -1407,9 +1290,13 @@ class Customer {
         this.nodeHistory.push([this.nodeX, this.nodeY]);
 
         this.dead = false;
-        this.walking = false;
+        this.walking = floor(random(2));
 
-        this.charID = 0;
+        this.charID = floor(random(3));
+        // 0 = down
+        // 1 = left
+        // 2 = right
+        // 3 = up
         this.direction = 0;
         this.npcInfo = npcInfoAll[this.charID];
         this.spritePos = 0;
@@ -1422,12 +1309,12 @@ class Customer {
         this.emoting = false;
         this.emoteCoolDown = 0;
         this.maxEmoteCoolDown = 100;
+
+        this.idleTimer = 0;
+        this.maxIdleTimer = 240;
     }
 
     findPaths(startX, startY, endX, endY) {
-        // console.log(startX, startY, endX, endY);
-        // console.log(isSolid(world[endY][endX]));
-
         // step 1: clear all existing pathfinding information in the grid
         for (var i = 0; i < this.grid.length; i++) {
             for (var j = 0; j < this.grid[i].length; j++) {
@@ -1455,11 +1342,6 @@ class Customer {
                 break;
             }
         }
-
-        // // tell all the creatures to recompute their paths
-        // for (var c in creatures) {
-        //     creatures[c].recomputePath();
-        // }
     }
 
     findPathIterative(startX, startY) {
@@ -1610,25 +1492,6 @@ class Customer {
         }
     }
 
-    display() {
-        if (!this.dead) {
-            fill(255, 0, 0);
-            noStroke();
-            ellipse(this.x + offsetX, this.y + offsetY, 10, 10);
-        }
-        // for (let y = 0; y < this.grid.length; y++) {
-        //     for (let x = 0; x < this.grid[y].length; x++) {
-        //         fill(255, 255, 255, 100);
-        //         textAlign(CENTER);
-        //         this.grid[y][x].nextDirection
-        //         x + ", " + y
-        //         this.grid[y][x].solid
-        //         text(this.grid[y][x].stepsToEnd, x * worldTileSize + worldTileSize / 2 + offsetX,
-        //             y * worldTileSize + worldTileSize / 2 + offsetY);
-        //     }
-        // }
-    }
-
     recomputePath() {
         // compute new node value
         this.nodeX = int(this.x / worldTileSize);
@@ -1659,19 +1522,48 @@ class Customer {
         }
     }
 
+    isAtEnd() {
+        if (int(this.x / worldTileSize) === this.destX && int(this.y / worldTileSize) === this.destY) {
+            return true;
+        }
+        return false;
+    }
+
+    newDest() {
+        this.walking = false;
+
+        this.nodeHistory = [];
+        this.nodeHistory.push([this.nodeX, this.nodeY]);
+
+        let to = worldNotSolid[floor(random(worldNotSolid.length))];
+        this.destX = to[0], this.destY = to[1];
+
+        this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
+        this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
+        this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
+    }
+
     move() {
         // move based on current movement vector
         if (this.x < this.desiredX) {
             this.x += 1;
+            // look right
+            this.direction = 2;
         }
         else if (this.x > this.desiredX) {
             this.x -= 1;
+            // look left
+            this.direction = 1;
         }
         if (this.y < this.desiredY) {
             this.y += 1;
+            // look down
+            this.direction = 0;
         }
         else if (this.y > this.desiredY) {
             this.y -= 1;
+            // look up
+            this.direction = 3;
         }
 
         // have we reached our new position?  if so, compute a new node value
@@ -1688,22 +1580,20 @@ class Customer {
         }
     }
 
-    // Animals change direction and move randomly in four directions (or sleeps) after a certain amount of time
-    // They check if the place they are trying to go is okay to go to, has constant speed
-    // Also inclues frame animation
-    moveAndDisplay() {
+    // NPC walking animation
+    display() {
         imageMode(CENTER);
-        // the chicken png has the left and right images flipped from the others :(
-        // how inconvenient
+        let progression = [1, 0, 1, 2];
 
-        // drawTile(nPCs[this.img], (this.direction * this.npcInfo.tilesPerRow) + this.spritePos,
-        //         this.npcInfo.tileSize, this.npcInfo.tileSize,
-        //         this.x + offsetX, this.y + offsetY);
+        // draw image
+        drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
+            this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,
+            this.x + offsetX, this.y + offsetY);
 
-        // the animal is walking
+        // the NPC is walking
         if (this.walking) {
             if (this.currentFrames >= this.maxFrames) {
-                if (this.spritePos + 1 < this.tilesPerRow) {
+                if (this.spritePos + 1 < progression.length) {
                     this.spritePos++;
                 } else {
                     this.spritePos = 0;
@@ -1713,6 +1603,15 @@ class Customer {
             this.currentFrames++;
         } else {
             this.spritePos = 0;
+            if (this.idleTimer < this.maxIdleTimer) {
+                this.idleTimer++;
+                if (floor(random(100)) < 1) {
+                    this.direction = floor(random(4));
+                }
+            } else {
+                this.walking = true;
+                this.idleTimer = 0;
+            }
         }
         imageMode(CORNER);
     }
