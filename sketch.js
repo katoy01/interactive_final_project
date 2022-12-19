@@ -446,7 +446,19 @@ function keyPressed() {
             stage = 1;
         }
     }
+    if (keyCode === 20) {
+        changeStage();
+    }
+}
 
+function changeStage() {
+    if (stage === 1) {
+        stage = 3;
+    } else if (stage === 3) {
+        player.x = width / 2;
+        player.y = height / 2;
+        stage = 1;
+    }
 }
 
 // Has start screen (stage = 0), game screen (stage = 1), and inventory screen (stage = 2)
