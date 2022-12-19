@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 1;
+let stage = 3;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -27,6 +27,7 @@ let tomato;
 let wheat;
 let eggsalad, bruschetta, cheesybread;
 let cheesybread_plate, eggsalad_plate, bruschetta_plate;
+let pot;
 
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
@@ -346,11 +347,11 @@ function preload() {
     storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
     cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
-    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png'); 
+    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png');
     bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
-    eggsalad_menu = loadImage('./assets/image/1_eggsalad_menu.png');
-    bruschetta_menu = loadImage('./assets/image/2_bruschetta_menu.png');
-    cheesybread_menu = loadImage('./assets/image/3_cheesybread_menu.png');
+    eggsalad_menu = loadImage('./assets/image/1_eggsaladmenu.png');
+    bruschetta_menu = loadImage('./assets/image/2_bruschettamenu.png');
+    cheesybread_menu = loadImage('./assets/image/3_cheesybreadmenu.png');
     pot_empty = loadImage('./assets/image/pot_empty.png');
     pot_full = loadImage('./assets/image/pot_full.png');
 }
@@ -371,6 +372,8 @@ function setup() {
     // inventory = createGraphics(cnv.parent.width, cnv.parent.height)
     rows = 1;
     cols = 8;
+
+    noiseLocationX = random(1000);
 
     tilesetArtwork.resize(4736, 2272);
     //inventoryCanvas.resize(960, 480);
@@ -403,6 +406,7 @@ function setup() {
 
     // setup the world overlay
     setupOverlay();
+    pot = new Pot(0, 0);
     setupOverlayKitchen();
 
     minOffsetX = (width) - (world[0].length * worldTileSize);
@@ -432,11 +436,11 @@ function setup() {
         tomatoSeeds = new Item("Tomato Seeds", 10, inventoryTiles[0]),
         wheatSeeds = new Item("Wheat Seeds", 10, inventoryTiles[1]),
         cornSeeds = new Item("Corn Seeds", 10, inventoryTiles[2]),
-        tomato = new Item("Tomato", 0, inventoryTiles[3]),
-        wheat = new Item("Wheat", 0, inventoryTiles[4]),
-        corn = new Item("Corn", 0, inventoryTiles[5]),
-        milk = new Item("Milk", 0, inventoryTiles[6]),
-        eggs = new Item("Eggs", 0, inventoryTiles[7])
+        tomato = new Item("Tomato", 5, inventoryTiles[3]),
+        wheat = new Item("Wheat", 5, inventoryTiles[4]),
+        corn = new Item("Corn", 5, inventoryTiles[5]),
+        milk = new Item("Milk", 5, inventoryTiles[6]),
+        eggs = new Item("Eggs", 5, inventoryTiles[7])
     ];
 }
 
@@ -452,6 +456,10 @@ function mouseClicked() {
         stage = 1;
         selectedStatus = false;
         numInventorySelected = -1;
+    }
+    else if (stage === 3 && pot.insidePotArr.length > 0 && pot.cooking === 0) {
+        // cooking = true;
+        pot.startCooking();
     }
 }
 
@@ -482,8 +490,10 @@ function keyPressed() {
         }
         else if (keyCode === 27) {
             potPopUp = false;
-            insidePotArr = [];
+            pot.insidePotArr = [];
             ingredientSelected = false;
+        } else if (keyCode === 8) {
+            pot.insidePotArr.splice(-1, 1);
         }
     }
 }
@@ -568,6 +578,7 @@ function draw() {
         push();
         translate(kitchenOffsetX, kitchenOffsetY);
         drawKitchen();
+        pot.display();
         pop();
 
         player.tileSize = kitchenTileSize;
@@ -680,6 +691,10 @@ function setupOverlayKitchen() {
     for (let y = 0; y < kitchen.length; y++) {
         overlayKitchen.push([]);
         for (let x = 0; x < kitchen[y].length; x++) {
+            // add pot
+            if (kitchen[y][x] === 17) {
+                pot.change(x * kitchenTileSize - kitchenTileSize * 0.1, y * kitchenTileSize + kitchenTileSize * 0.1);
+            }
             // add furniture to overlay, add tiles and walls to kitchen
             if (y === 2 && (x >= kitchen[y].length - 9 && x <= kitchen[y].length - 2)) {
                 overlayKitchen[y].push(kitchen[y][x]);
@@ -831,7 +846,6 @@ function noCustomers(realX, realY, selfTileSize) {
 
 let potPopUp = false;
 let recipePopUp = false;
-let insidePotArr = [];
 // Player interacts with overlay at position `x`,`y` (triggered once after pressing `enter` button)
 function interactOverlay(x, y) {
     if (stage === 1) {
@@ -884,9 +898,9 @@ function interactOverlay(x, y) {
                 ingredientSelected = false;
                 potPopUp = !potPopUp;
             }
-            else if (ingredientSelected && insidePotArr.length < 3
+            else if (ingredientSelected && pot.insidePotArr.length < 3
                 && inventoryArray[numIngredientSelected].amount >= 1) {
-                insidePotArr.push(numIngredientSelected);
+                pot.insidePotArr.push(numIngredientSelected);
             }
         }
     }
@@ -996,8 +1010,8 @@ function displayIngredientSelected(itemNum, barStartX, barStartY) {
 
 function displayInsidePot(barStartX, barStartY, dist) {
     strokeWeight(2);
-    for (let i = 0; i < insidePotArr.length; i++) {
-        image(inventoryArray[insidePotArr[i]].graphic, barStartX + 5 + (dist * i), barStartY + 5);
+    for (let i = 0; i < pot.insidePotArr.length; i++) {
+        image(inventoryArray[pot.insidePotArr[i]].graphic, barStartX + 5 + (dist * i), barStartY + 5);
     }
 }
 
@@ -2187,5 +2201,88 @@ class NPC {
             this.emoteCoolDown--;
         }
         imageMode(CORNER);
+    }
+}
+
+class Pot {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.cooking = 0;
+        this.insidePotArr = [];
+        this.noiseLocationX = random(1000);
+        this.size = kitchenTileSize * (1.2);
+        this.recipe = -1;
+        this.recipeBook = [
+            {
+                png: eggsalad,
+                recipe: [3, 5, 7]
+            },
+            {
+                png: bruschetta,
+                recipe: [3, 4]
+            },
+            {
+                png: cheesybread,
+                recipe: [4, 6]
+            }
+        ];
+        this.cookingTimer = 0;
+        this.maxCookingTImer = 240;
+    }
+
+    change(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    isInBook() {
+        for (let i = 0; i < this.recipeBook.length; i++) {
+            let recipeObj = this.recipeBook[i].recipe;
+            for (let n = 0; n < recipeObj.length; n++) {
+                if (this.insidePotArr.includes(recipeObj[n])) {
+                    if (n === recipeObj.length - 1) {
+                        return i;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        return -1;
+    }
+
+    startCooking() {
+        this.recipe = this.isInBook();
+        if (this.recipe >= 0) {
+            this.cooking = 1;
+            for (let n = 0; n < this.insidePotArr.length; n++) {
+                let index = this.insidePotArr[n];
+                inventoryArray[index].amount--;
+            }
+            this.insidePotArr = [];
+            cookingSound.play();
+        }
+        potPopUp = false;
+    }
+
+    display() {
+        if (this.cooking === 0) {
+            drawTile(pot_empty, 0, pot_empty.width, pot_empty.height, this.x, this.y, this.size, this.size);
+        } else if (this.cooking === 1) {
+            let xOffset = map(noise(this.noiseLocationX), 0, 1, -1, 1);
+            drawTile(pot_full, 0, pot_full.width, pot_full.height, this.x + xOffset, this.y, this.size, this.size);
+            this.noiseLocationX += 0.1;
+            this.cookingTimer++;
+            if (this.cookingTimer >= this.maxCookingTImer) {
+                this.cooking = 2;
+                this.cookingTimer = 0;
+                cookingSound.stop();
+            }
+        } else if (this.cooking === 2) {
+            let img = this.recipeBook[this.recipe].png;
+            drawTile(pot_full, 0, pot_full.width, pot_full.height, this.x, this.y, this.size, this.size);
+            drawTile(img, 0, img.width, img.height, this.x + kitchenTileSize / 6, this.y + kitchenTileSize / 5, this.size / 1.5, this.size / 2);
+        }
     }
 }
