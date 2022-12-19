@@ -495,6 +495,8 @@ function draw() {
         })
         npcArr.forEach(npc => {
             npc.display();
+            npc.displayEmote();
+            // npc.displayEmote();
             if (npc.isAtEnd()) {
                 npc.newDest();
             } else if (npc.walking) {
@@ -744,6 +746,11 @@ function noAnimals(realX, realY, selfTileSize) {
             return false;
         }
     }
+    for (let index = 0; index < npcArr.length; index++) {
+        if (dist(realX, realY, npcArr[index].x, npcArr[index].y) <= (npcArr[index].npcInfo.tileSizeX / 2 + selfTileSize / 2) - 15) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -759,32 +766,32 @@ function interactOverlay(x, y) {
             setOverlayAtPosition(4300, x, y);
             gate.play();
         }
-        if (getOverlayTileAtPosition(x, y) === 4300) {
+        else if (getOverlayTileAtPosition(x, y) === 4300) {
             setOverlayAtPosition(4299, x, y);
             gate.play();
         }
         // plant or harvest crop
-        if (getWorldTileAtPosition(x, y) === 1353) {
+        else if (getWorldTileAtPosition(x, y) === 1353) {
             if (getOverlayTileAtPosition(x, y) === -1) {
                 stage = 2;
             }
-            if (getOverlayTileAtPosition(x, y) === 6385) {
+            else if (getOverlayTileAtPosition(x, y) === 6385) {
                 harvest.play();
                 setOverlayAtPosition(-1, x, y);
                 wheat.amount = wheat.amount + 1;
             }
-            if (getOverlayTileAtPosition(x, y) === 5645) {
+            else if (getOverlayTileAtPosition(x, y) === 5645) {
                 harvest.play();
                 setOverlayAtPosition(-1, x, y);
                 corn.amount = corn.amount + 1;
             }
-            if (getOverlayTileAtPosition(x, y) === 5201) {
+            else if (getOverlayTileAtPosition(x, y) === 5201) {
                 harvest.play();
                 setOverlayAtPosition(-1, x, y);
                 tomato.amount = tomato.amount + 1;
             }
         }
-        if (getWorldTileAtPosition(x, y) === 2468) {
+        else if (getWorldTileAtPosition(x, y) === 2468) {
             console.log("HELLO");
             changeStage();
         }
@@ -967,6 +974,9 @@ class Player {
         interactOverlay(tempX, tempY);
         for (let index = 0; index < animalArr.length; index++) {
             animalArr[index].lookAtPlayer(tempX, tempY);
+        }
+        for (let index = 0; index < npcArr.length; index++) {
+            npcArr[index].lookAtPlayer(tempX, tempY);
         }
     }
 
@@ -1234,6 +1244,20 @@ class Animal {
         if (dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.animalInfo.tileSize / 2) {
             return false;
         }
+        for (let index = 0; index < npcArr.length; index++) {
+            if (dist(realX, realY, npcArr[index].x, npcArr[index].y)
+                <= (npcArr[index].npcInfo.tileSizeX / 2 + this.animalInfo.tileSize / 2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // there are no animals or players at the place the animal is trying to move
+    noPlayer(realX, realY) {
+        if (dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.animalInfo.tileSize / 2) {
+            return false;
+        }
         return true;
     }
 
@@ -1275,28 +1299,36 @@ class Animal {
         if (slope > 0) {
             if (slope < 1) {
                 if (this.x > realX) {
+                    // left
                     this.direction = 2;
                 } else {
+                    // right
                     this.direction = 3;
                 }
             } else {
                 if (this.y > realY) {
+                    // up
                     this.direction = 1;
                 } else {
+                    // down
                     this.direction = 0;
                 }
             }
         } else {
             if (slope > -1) {
                 if (this.x > realX) {
+                    // left
                     this.direction = 2;
                 } else {
+                    // right
                     this.direction = 3;
                 }
             } else {
                 if (this.y > realY) {
+                    // up
                     this.direction = 1;
                 } else {
+                    // down
                     this.direction = 0;
                 }
             }
@@ -1370,21 +1402,24 @@ class Animal {
             }
             this.currentFrames++;
 
-            if (this.direction === 0) {
+            if (this.direction === 0 && this.noPlayer(this.x, this.y + this.speed)) {
                 this.y += this.speed;
-            } else if (this.direction === 1) {
+                this.walkingTimer++;
+            } else if (this.direction === 1 && this.noPlayer(this.x, this.y - this.speed)) {
                 this.y -= this.speed;
-            } else if (this.direction === 2) {
+                this.walkingTimer++;
+            } else if (this.direction === 2 && this.noPlayer(this.x - this.speed, this.y)) {
                 this.x -= this.speed;
-            } else if (this.direction === 3) {
+                this.walkingTimer++;
+            } else if (this.direction === 3 && this.noPlayer(this.x + this.speed, this.y)) {
                 this.x += this.speed;
+                this.walkingTimer++;
             }
 
             if (this.walkingTimer >= this.maxWalkingTimer) {
                 this.walkingTimer = 0;
                 this.walking = false;
             }
-            this.walkingTimer++;
         } else {
             this.spritePos = 0;
             this.restingTimer++;
@@ -1767,25 +1802,106 @@ class NPC {
         this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
     }
 
+    // If the player presses `enter` in front of the animal
+    // make the npc look at the player (uses slope logic)
+    lookAtPlayer(screenX, screenY) {
+        let realX = screenX - offsetX;
+        let realY = screenY - offsetY;
+        if (dist(realX, realY, this.x, this.y) > (this.npcInfo.tileSizeX / 2 + player.tileSize / 2)) {
+            return;
+        }
+        let slope;
+        if (realX < this.x) {
+            slope = (this.y - realY) / (this.x - realX);
+        } else {
+            slope = (realY - this.y) / (realX - this.x);
+        }
+        if (slope > 0) {
+            if (slope < 1) {
+                if (this.x > realX) {
+                    // left
+                    this.direction = 1;
+                } else {
+                    // right
+                    this.direction = 2;
+                }
+            } else {
+                if (this.y > realY) {
+                    // up
+                    this.direction = 3;
+                } else {
+                    // down
+                    this.direction = 0;
+                }
+            }
+        } else {
+            if (slope > -1) {
+                if (this.x > realX) {
+                    // left
+                    this.direction = 1;
+                } else {
+                    // right
+                    this.direction = 2;
+                }
+            } else {
+                if (this.y > realY) {
+                    // up
+                    this.direction = 3;
+                } else {
+                    // down
+                    this.direction = 0;
+                }
+            }
+        }
+        this.spritePos = 0;
+        this.currentFrames = 0;
+        this.walkingTimer = 0;
+        this.restingTimer = 0;
+        this.walking = false;
+        if (this.emoteCoolDown <= 0) {
+            this.emoteTimer = 0;
+            this.emoting = true;
+            this.emote = floor(random(6));
+            this.emoteCoolDown = this.maxEmoteCoolDown;
+        }
+    }
+
+
+    // there are no player at the place the npc is trying to move
+    noPlayer(realX, realY) {
+        if (dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
+            return false;
+        }
+        return true;
+    }
+
     move() {
         // move based on current movement vector
         if (this.x < this.desiredX) {
-            this.x += 1;
+            if (this.noPlayer(this.x + this.npcInfo.tileSizeX / 2, this.y)) {
+                this.x += 1;
+            }
             // look right
             this.direction = 2;
         }
         else if (this.x > this.desiredX) {
-            this.x -= 1;
+            if (this.noPlayer(this.x - this.npcInfo.tileSizeX / 2, this.y)) {
+                this.x -= 1;
+            }
             // look left
             this.direction = 1;
         }
         if (this.y < this.desiredY) {
-            this.y += 1;
+            if (this.noPlayer(this.x, this.y + this.npcInfo.tileSizeY / 2)) {
+                this.y += 1;
+            }
             // look down
             this.direction = 0;
         }
         else if (this.y > this.desiredY) {
-            this.y -= 1;
+            if (this.noPlayer(this.x, this.y - this.npcInfo.tileSizeY / 2)) {
+                this.y -= 1;
+            }
             // look up
             this.direction = 3;
         }
@@ -1887,7 +2003,7 @@ class NPC {
     displayEmote() {
         imageMode(CENTER);
         if (this.emoting) {
-            image(emotes[this.emote], this.x + offsetX + this.npcInfo.tileSize / 2, this.y + offsetY - this.npcInfo.tileSize / 4, 27, 27);
+            image(emotes[this.emote], this.x + offsetX + this.npcInfo.tileSizeX / 2, this.y + offsetY - this.npcInfo.tileSizeY / 3, 27, 27);
             if (this.emoteTimer < this.maxEmoteTimer) {
                 this.emoteTimer++;
             } else {
