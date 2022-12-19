@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 1;
+let stage = 3;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -50,6 +50,8 @@ let wheatArt, wheatEmpty;
 // selecting inventory when planting seeds
 let numInventorySelected = -1;
 let selectedStatus = false;
+let numIngredientSelected = -1;
+let ingredientSelected = false;
 
 let gate;
 let adultMoo;
@@ -174,11 +176,11 @@ let kitchen = [
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
     [50, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 50],
     [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 0, 1, 30, 30, 30, 16, 50],
-    [50, 11, 12, 12, 12, 12, 12, 12, 13, 7, 24, 7, 8, 37, 37, 37, 23, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 7, 8, 37, 37, 37, 23, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 50],
-    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 50],
-    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
 ]
 
@@ -444,14 +446,24 @@ function keyPressed() {
             selectedStatus = true;
             numInventorySelected = keyCode - 49;
         }
-        if (keyCode === 27) {
+        else if (keyCode === 27) {
             selectedStatus = false;
             numInventorySelected = -1;
             stage = 1;
         }
     }
-    else if (keyCode === 13 && stage === 3) {
-        changeStage();
+    else if (stage === 3) {
+        if (keyCode === 13) {
+            changeStage();
+        }
+        else if (keyCode >= 49 && keyCode <= 56) {
+            ingredientSelected = true;
+            numIngredientSelected = keyCode - 49;
+        }
+        else if (keyCode === 27) {
+            ingredientSelected = false;
+            numIngredientSelected = -1;
+        }
     }
 }
 
@@ -552,6 +564,8 @@ function draw() {
             }
         })
 
+        showIngredients();
+
         // imageMode(CORNER);
         // image(kitchenArtWork, 0, 0);
         // let imgID = 0;
@@ -596,8 +610,8 @@ function drawKitchen() {
                 x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
 
             // also draw the overlay here
-            let idOverlay = overlay[y][x];
-            drawTile(kitchenArtWork, idOverlay, kitchenTileSize, kitchenTileSize,
+            let idOverlay = overlayKitchen[y][x];
+            drawTile(kitchenArtWork, idOverlay, worldTileSize, worldTileSize,
                 x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
         }
     }
@@ -642,11 +656,18 @@ function setupOverlayKitchen() {
     for (let y = 0; y < kitchen.length; y++) {
         overlayKitchen.push([]);
         for (let x = 0; x < kitchen[y].length; x++) {
-            // adds Gates to our overlay, and deletes it from the world array
-            // so that it's interactable/ changable
-            if (kitchen[y][x] === 4299) {
-                overlayKitchen[y].push(4299);
-                kitchen[y][x] = 607;
+            // add furniture to overlay, add tiles and walls to kitchen
+            if (y === 2 && (x >= kitchen[y].length - 9 && x <= kitchen[y].length - 2)) {
+                overlayKitchen[y].push(kitchen[y][x]);
+                kitchen[y][x] = 55 - (x % 2);
+            }
+            else if (y === 3 && (x >= kitchen[y].length - 9 && x <= kitchen[y].length - 3)) {
+                overlayKitchen[y].push(kitchen[y][x]);
+                kitchen[y][x] = 12;
+            }
+            else if ((y >= 3 && y <= 5) && (x === kitchen[y].length - 2)) {
+                overlayKitchen[y].push(kitchen[y][x]);
+                kitchen[y][x] = 13;
             } else {
                 overlayKitchen[y].push(-1);
             }
@@ -742,14 +763,21 @@ function isSolidKitchen(id) {
 // Returns true if there are no animals in that coordinate, false otherwise
 function noAnimals(realX, realY, selfTileSize) {
     for (let index = 0; index < animalArr.length; index++) {
-        if (dist(realX, realY, animalArr[index].x, animalArr[index].y) <= (animalArr[index].animalInfo.tileSize / 2 + selfTileSize / 2)) {
+        if (dist(realX, realY, animalArr[index].x, animalArr[index].y)
+            <= (animalArr[index].animalInfo.tileSize / 2 + selfTileSize / 2)) {
             return false;
         }
     }
     for (let index = 0; index < npcArr.length; index++) {
-        if (dist(realX, realY, npcArr[index].x, npcArr[index].y) <= (npcArr[index].npcInfo.tileSizeX / 2 + selfTileSize / 2) - 15) {
+        if (stage === 1
+            && dist(realX, realY, npcArr[index].x, npcArr[index].y)
+            <= (npcArr[index].npcInfo.tileSizeX / 2 + selfTileSize / 2) - 15) {
             return false;
         }
+        // else if (stage === 3
+        //     && dist(realX + offsetX, realY + offsetY, customerArr[index].x, customerArr[index].y) <= (kitchenTileSize)) {
+        //     return false;
+        // }
     }
     return true;
 }
@@ -858,6 +886,61 @@ function showProduceInventory() {
     noStroke();
 }
 
+// Shows a small bar on the bottom of the screen while playing the game
+// that displays the images and numbers of produce you have obtained
+function showIngredients() {
+    let tileDist = 5;
+    let produceNum = 5;
+    let barWidth = tileDist + (inventoryTileSize + tileDist) * produceNum, barHeight = 42;
+    let barStartX = width / 2 - barWidth / 2, barStartY = height - barHeight;
+
+    strokeWeight(5);
+    stroke(120, 65, 0);
+    fill(150, 75, 0);
+    rect(barStartX, barStartY, barWidth, barHeight);
+
+    strokeWeight(2);
+    for (let i = 3; i < 8; i++) {
+        image(inventoryArray[i].graphic, barStartX + 5 + ((tileDist + inventoryTileSize) * (i - 3)), barStartY + 5);
+        fill(255);
+        textSize(15);
+        text(inventoryArray[i].amount, barStartX + 6 + ((tileDist + inventoryTileSize) * (i - 3)), barStartY + 13);
+    }
+    displayIngredientSelected(numIngredientSelected);
+    noStroke();
+}
+
+// Displays a white box around selected item in inventory
+function displayIngredientSelected(itemNum) {
+    if (!ingredientSelected) {
+        return;
+    }
+
+    let tileDist = 5;
+    let produceNum = 5;
+    let barWidth = tileDist + (inventoryTileSize + tileDist) * produceNum, barHeight = 42;
+    let barStartX = width / 2 - barWidth / 2, barStartY = height - barHeight;
+
+    stroke(255, 255, 255, 200);
+    strokeWeight(3);
+
+    let yMin, yMax, xMin, xMax;
+    let itemSize = 37;
+    yMin = barStartY + 1;
+    yMax = yMin + itemSize;
+
+    xMin = barStartX + (itemNum * itemSize) + 2.5;
+    xMax = xMin + itemSize;
+
+    line(xMin, yMin, xMax, yMin);
+    line(xMin, yMax, xMax, yMax);
+    line(xMin, yMin, xMin, yMax);
+    line(xMax, yMin, xMax, yMax);
+
+    noStroke();
+}
+
+
 // let lock = 1;
 let ampm = 1;
 let startTime = 7;
@@ -929,7 +1012,7 @@ class Player {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.speed = 5;
+        this.speed = 4;
         // 0 = down
         // 1 = right
         // 2 = left
@@ -1078,6 +1161,7 @@ class Player {
     }
 
     moveAndDisplayKitchen() {
+        let speed = this.speed * (32 / 60);
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
@@ -1090,7 +1174,7 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.right - offsetX, this.middleY - offsetY, this.tileSize)) {
-                this.x += this.speed;
+                this.x += speed;
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
                 this.direction = 1;
@@ -1104,7 +1188,7 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.left, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.left - offsetX, this.middleY - offsetY, this.tileSize)) {
-                this.x -= this.speed;
+                this.x -= speed;
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
                 this.direction = 2;
@@ -1118,7 +1202,7 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.middleX, this.up);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.middleX - offsetX, this.up - offsetY, this.tileSize)) {
-                this.y -= this.speed;
+                this.y -= speed;
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
                 this.direction = 3;
@@ -1132,7 +1216,7 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.middleX, this.down);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.middleX - offsetX, this.down - offsetY, this.tileSize)) {
-                this.y += this.speed;
+                this.y += speed;
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
                 this.direction = 0;
@@ -1869,7 +1953,12 @@ class NPC {
 
     // there are no player at the place the npc is trying to move
     noPlayer(realX, realY) {
-        if (dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
+        if (stage === 1
+            && dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
+            return false;
+        }
+        else if (stage === 3
+            && dist(realX, realY, player.x, player.y) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
             return false;
         }
         return true;
