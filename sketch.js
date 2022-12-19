@@ -171,15 +171,15 @@ let world = [
 // 16 x 8
 // 512 x 256
 let kitchen = [
-    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
-    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
-    [48, 47, 48, 47, 48, 47, 48, 47, 0, 17, 0, 1, 30, 30, 30, 16],
-    [11, 12, 12, 12, 12, 12, 12, 13, 7, 24, 7, 8, 37, 37, 37, 23],
-    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3],
-    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10],
-    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
-    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
-
+    [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+    [50, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 50],
+    [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 0, 1, 30, 30, 30, 16, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 13, 7, 24, 7, 8, 37, 37, 37, 23, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 50],
+    [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
 ]
 
 
@@ -371,7 +371,11 @@ function setup() {
     }
     nPCs[1].resize(138, 128);
 
-    kitchenArtWork.resize(420, 480);
+    kitchenTileSize = height / kitchen.length;
+    // kitchenTileSize = 100
+    console.log(kitchenTileSize);
+    // kitchenArtWork.resize(kitchenTileSize * 7, kitchenTileSize * 8);
+    // kitchenArtWork.resize(420, 480);
 
     animalInfoAll['cow'].img = cow_brownArt;
     animalInfoAll['cowBaby'].img = cow_baby_brownArt;
@@ -454,7 +458,7 @@ function keyPressed() {
 function changeStage() {
     if (stage === 1) {
         stage = 3;
-        player.y = height - 30;
+        player.y = height - 90;
     } else if (stage === 3) {
         player.x = 480;
         player.y = 340;
@@ -532,10 +536,10 @@ function draw() {
         pop();
 
         player.tileSize = kitchenTileSize;
-        player.moveAndDisplayKitchen(60, 60);
+        player.moveAndDisplayKitchen();
 
         if (!lock) {
-            let customer = new NPC(8, 7, 0, 3, kitchenTileSize, 2);
+            let customer = new NPC(8, 7, 1, 3, kitchenTileSize, 2);
             customerArr.push(customer);
             lock = 1;
         }
@@ -586,13 +590,13 @@ function drawKitchen() {
         for (let x = 0; x < kitchen[y].length; x++) {
             // extract the tile here
             let id = kitchen[y][x];
-            drawTile(kitchenArtWork, id, kitchenTileSize, kitchenTileSize,
-                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize,);
+            drawTile(kitchenArtWork, id, worldTileSize, worldTileSize,
+                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
 
             // also draw the overlay here
             let idOverlay = overlay[y][x];
             drawTile(kitchenArtWork, idOverlay, kitchenTileSize, kitchenTileSize,
-                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize,);
+                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
         }
     }
 }
@@ -727,7 +731,7 @@ function isSolid(id) {
 // Returns true if solid tile, false if not solid
 function isSolidKitchen(id) {
     // return true for all solid tiles
-    if (id === 40) {
+    if (id === 50) {
         return true;
     }
     return false;
@@ -1063,7 +1067,7 @@ class Player {
         imageMode(CORNER);
     }
 
-    moveAndDisplayKitchen(displayX, displayY) {
+    moveAndDisplayKitchen() {
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
@@ -1140,10 +1144,10 @@ class Player {
             }
 
             drawTile(playerArtwork, (this.direction * 4) + this.currentFrame,
-                playerTileSizeX, playerTileSizeY, this.x, this.y, displayX, displayY);
+                playerTileSizeX, playerTileSizeY, this.x, this.y, kitchenTileSize, kitchenTileSize);
         } else {
             drawTile(playerArtwork, (this.direction * 4), playerTileSizeX, playerTileSizeY,
-                this.x, this.y, displayX, displayY);
+                this.x, this.y, kitchenTileSize, kitchenTileSize);
         }
         imageMode(CORNER);
     }
@@ -1852,7 +1856,7 @@ class NPC {
         drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
             this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,
             this.x, this.y,
-            this.npcInfo.tileSizeX * 60 / 32, this.npcInfo.tileSizeY * 60 / 32,);
+            this.npcInfo.tileSizeX * kitchenTileSize / 32, this.npcInfo.tileSizeY * kitchenTileSize / 32,);
 
         // the NPC is walking
         if (this.walking) {
