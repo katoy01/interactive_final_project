@@ -25,12 +25,18 @@ let eggs;
 let corn;
 let tomato;
 let wheat;
-let eggsalad, bruschetta, cheesebread;
-let cheesebread_plate, eggsalad_plate, bruschetta_plate;
+let eggsalad, bruschetta, cheesybread;
+let cheesybread_plate, eggsalad_plate, bruschetta_plate;
+
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
-let pot, table, chair;
+let table, chair;
 let storefront;
+
+let arrow;
+let cheesybread_bubble, eggsalad_bubble, bruschetta_bubble;
+let eggsalad_menu, bruschetta_menu, cheesybread_menu;
+let pot_empty, pot_full;
 
 //emotions 
 let amused, angry, annoyed, cool, crying,
@@ -63,7 +69,7 @@ let plop;
 let clickSound;
 let walk;
 let field_theme;
-
+let cookingSound;
 
 // The size of each tile (32 x 32 square)
 // They are all the same now, which might seem redundant, but we were experimenting with tile sizes 
@@ -308,6 +314,7 @@ function preload() {
     chicks = loadSound("./assets/sound/chicks.wav");
     clickSound = loadSound("./assets/sound/click.wav");
     field_theme = loadSound('./assets/sound/field_theme.wav');
+    cookingSound = loadSound('./assets/sound/cookingSound.wav');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -322,9 +329,9 @@ function preload() {
     nPCs[1] = loadImage('./assets/image/npc2.png');
     nPCs[2] = loadImage('./assets/image/npc3.png');
     eggsalad = loadImage('./assets/image/eggsalad.png');
-    // bruschetta = loadImage('./assets/image/bruschetta.png');
-    cheesebread = loadImage('./assets/image/cheesebread.png');
-    cheesebread_plate = loadImage('./assets/image/cheesebread_plate.png');
+    cheesybread = loadImage('./assets/image/cheesybread.png');
+    cheesybread_plate = loadImage('./assets/image/cheesybread_plate.png');
+    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
     eggsalad_plate = loadImage('./assets/image/eggsalad_plate.png');
     bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
     dish_pile = loadImage('./assets/image/dish_pile.png');
@@ -334,10 +341,18 @@ function preload() {
     npc1 = loadImage('./assets/image/npc1.png');
     npc2 = loadImage('./assets/image/npc2.png');
     npc3 = loadImage('./assets/image/npc3.png');
-    pot = loadImage('./assets/image/pot.png');
     table = loadImage('./assets/image/table.png');
     chair = loadImage('./assets/image/chair.png');
     storefront = loadImage('./assets/image/storefront.png');
+    arrow = loadImage('./assets/image/arrow.png');
+    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
+    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png'); 
+    bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
+    eggsalad_menu = loadImage('./assets/image/1_eggsalad_menu.png');
+    bruschetta_menu = loadImage('./assets/image/2_bruschetta_menu.png');
+    cheesybread_menu = loadImage('./assets/image/3_cheesybread_menu.png');
+    pot_empty = loadImage('./assets/image/pot_empty.png');
+    pot_full = loadImage('./assets/image/pot_full.png');
 }
 
 // Create canvas, build world and overlay,
