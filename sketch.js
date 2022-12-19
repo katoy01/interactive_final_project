@@ -331,12 +331,6 @@ function preload() {
     nPCs[0] = loadImage('./assets/image/npc1.png');
     nPCs[1] = loadImage('./assets/image/npc2.png');
     nPCs[2] = loadImage('./assets/image/npc3.png');
-    eggsalad = loadImage('./assets/image/eggsalad.png');
-    cheesybread = loadImage('./assets/image/cheesybread.png');
-    cheesybread_plate = loadImage('./assets/image/cheesybread_plate.png');
-    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
-    eggsalad_plate = loadImage('./assets/image/eggsalad_plate.png');
-    bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
     dish_pile = loadImage('./assets/image/dish_pile.png');
     dish1 = loadImage('./assets/image/dish1.png');
     dish2 = loadImage('./assets/image/dish2.png');
@@ -348,12 +342,23 @@ function preload() {
     chair = loadImage('./assets/image/chair.png');
     storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
-    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
+
+    eggsalad = loadImage('./assets/image/eggsalad.png');
+    bruschetta = loadImage('./assets/image/bruschetta.png');
+    cheesybread = loadImage('./assets/image/cheesybread.png');
+
+    eggsalad_plate = loadImage('./assets/image/eggsalad_plate.png');
+    bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
+    cheesybread_plate = loadImage('./assets/image/cheesybread_plate.png');
+
     eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png');
     bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
+    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
+
     eggsalad_menu = loadImage('./assets/image/1_eggsaladmenu.png');
     bruschetta_menu = loadImage('./assets/image/2_bruschettamenu.png');
     cheesybread_menu = loadImage('./assets/image/3_cheesybreadmenu.png');
+
     pot_empty = loadImage('./assets/image/pot_empty.png');
     pot_full = loadImage('./assets/image/pot_full.png');
 }
@@ -896,9 +901,14 @@ function interactOverlay(x, y) {
     else if (stage === 3) {
         // console.log(getOverlayTileAtPosition(x, y));
         if (getOverlayTileAtPosition(x, y) === 24) {
-            if (!potPopUp) {
+            if (!potPopUp && pot.cooking === 0) {
                 ingredientSelected = false;
                 potPopUp = !potPopUp;
+            }
+            else if (!potPopUp && pot.cooking === 2) {
+                player.holding = true;
+                player.holdingPlate = pot.recipe;
+                pot.cooking = 0;
             }
             else if (ingredientSelected && pot.insidePotArr.length < 3
                 && inventoryArray[numIngredientSelected].amount >= 1) {
@@ -1105,6 +1115,9 @@ class Player {
         this.facingTile = [];
 
         this.tileSize = 32;
+
+        this.holding = false;
+        this.holdingPlate = -1;
     }
 
     computeSensors() {
@@ -1139,6 +1152,13 @@ class Player {
             for (let index = 0; index < npcArr.length; index++) {
                 npcArr[index].lookAtPlayer(tempX, tempY);
             }
+        }
+    }
+
+    showPlate() {
+        if (this.holding) {
+            let img = pot.recipeBook[this.holdingPlate].plate;
+            drawTile(img, 0, img.width, img.height, this.x, this.y - kitchenTileSize / 2, kitchenTileSize, kitchenTileSize / 1.5);
         }
     }
 
@@ -1340,6 +1360,9 @@ class Player {
             drawTile(playerArtwork, (this.direction * 4), playerTileSizeX, playerTileSizeY,
                 this.x, this.y, kitchenTileSize, kitchenTileSize);
         }
+
+        this.showPlate();
+
         imageMode(CORNER);
     }
 }
@@ -2217,15 +2240,24 @@ class Pot {
         this.recipe = -1;
         this.recipeBook = [
             {
-                png: eggsalad,
+                inPot: eggsalad,
+                plate: eggsalad_plate,
+                bubble: eggsalad_bubble,
+                menu: eggsalad_menu,
                 recipe: [3, 5, 7]
             },
             {
-                png: bruschetta,
+                inPot: bruschetta,
+                plate: bruschetta_plate,
+                bubble: bruschetta_bubble,
+                menu: bruschetta_menu,
                 recipe: [3, 4]
             },
             {
-                png: cheesybread,
+                inPot: cheesybread,
+                plate: cheesybread_plate,
+                bubble: cheesybread_bubble,
+                menu: cheesybread_menu,
                 recipe: [4, 6]
             }
         ];
@@ -2282,7 +2314,7 @@ class Pot {
                 cookingSound.stop();
             }
         } else if (this.cooking === 2) {
-            let img = this.recipeBook[this.recipe].png;
+            let img = this.recipeBook[this.recipe].inPot;
             drawTile(pot_full, 0, pot_full.width, pot_full.height, this.x, this.y, this.size, this.size);
             drawTile(img, 0, img.width, img.height, this.x + kitchenTileSize / 6, this.y + kitchenTileSize / 5, this.size / 1.5, this.size / 2);
         }
