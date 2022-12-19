@@ -345,11 +345,11 @@ function preload() {
     storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
     cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
-     eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png'); 
-     bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
+    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png'); 
+    bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
     eggsalad_menu = loadImage('./assets/image/1_eggsalad_menu.png');
-     bruschetta_menu = loadImage('./assets/image/2_bruschetta_menu.png');
-     cheesybread_menu = loadImage('./assets/image/3_cheesybread_menu.png');
+    bruschetta_menu = loadImage('./assets/image/2_bruschetta_menu.png');
+    cheesybread_menu = loadImage('./assets/image/3_cheesybread_menu.png');
     pot_empty = loadImage('./assets/image/pot_empty.png');
     pot_full = loadImage('./assets/image/pot_full.png');
 }
