@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 0;
+let stage = 3;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -69,6 +69,7 @@ let field_theme;
 let worldTileSize = 32;
 let inventoryTileSize = 32;
 let playerTileSizeX = 32, playerTileSizeY = 32;
+let kitchenTileSize = 60;
 
 // offsets for screen scrolling
 let offsetX = -495;
@@ -167,29 +168,18 @@ let world = [
     //^40th row
 ]
 
+// 16 x 8
+// 512 x 256
 let kitchen = [
-    [178, 179, 180, 179, 180, 179, 180, 179, 180, 181],
-    [14, 76, 77, 15, 15, 16, 17, 72, 74, 75],
-    [28, 90, 91, 29, 29, 30, 31, 86, 88, 89],
-    [22, 23, 24, 23, 24, 23, 24, 23, 102, 89],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 103],
-    [22, 23, 24, 23, 24, 23, 24, 23, 6, 7],
-    [36, 37, 38, 39, 40, 39, 40, 39, 20, 21],
-    [22, 23, 24, 23, 24, 23, 24, 23, 34, 35],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41],
-    [22, 23, 24, 23, 24, 23, 24, 23, 24, 27],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41],
-    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
-    [0, 0, 17, 15, 15, 16, 17, 72, 74, 75,],
-    [28, 90, 91, 29, 29, 30, 31, 86, 88, 89,],
-    [22, 23, 24, 23, 24, 23, 24, 23, 102, 89,],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 103,],
-    [22, 23, 24, 23, 24, 23, 24, 23, 6, 7,],
-    [36, 37, 38, 39, 40, 39, 40, 39, 20, 21,],
-    [22, 23, 24, 23, 24, 23, 24, 23, 34, 35,],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41,],
-    [22, 23, 24, 23, 24, 23, 24, 23, 24, 27,],
-    [36, 37, 38, 39, 40, 39, 40, 39, 40, 41]
+    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
+    [47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48],
+    [48, 47, 48, 47, 48, 47, 48, 47, 0, 17, 0, 1, 30, 30, 30, 16],
+    [11, 12, 12, 12, 12, 12, 12, 13, 7, 24, 7, 8, 37, 37, 37, 23],
+    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3],
+    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10],
+    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+
 ]
 
 
@@ -205,11 +195,13 @@ for (let y = 4; y < world.length - 4; y++) {
 
 // Overlay for the world
 let overlay = [];
+let overlayKitchen = [];
 
 let player;
 let plantArr = [];
 let cow, cowBaby, chicken, chickenBaby;
 let customerArr = [];
+let npcArr = [];
 let animalArr = [];
 
 // Stores information for all the plants
@@ -379,6 +371,8 @@ function setup() {
     }
     nPCs[1].resize(138, 128);
 
+    kitchenArtWork.resize(420, 480);
+
     animalInfoAll['cow'].img = cow_brownArt;
     animalInfoAll['cowBaby'].img = cow_baby_brownArt;
     animalInfoAll['chicken'].img = chickenArt;
@@ -386,6 +380,7 @@ function setup() {
 
     // setup the world overlay
     setupOverlay();
+    setupOverlayKitchen();
 
     minOffsetX = (width) - (world[0].length * worldTileSize);
     minOffsetY = (height) - (world.length * worldTileSize);
@@ -402,8 +397,8 @@ function setup() {
     for (let i = 0; i < 5; i++) {
         let from = worldNotSolid[floor(random(worldNotSolid.length))];
         let to = worldNotSolid[floor(random(worldNotSolid.length))];
-        let customer = new NPC(from[0], from[1], to[0], to[1], world);
-        customerArr.push(customer);
+        let npc = new NPC(from[0], from[1], to[0], to[1], worldTileSize, worldTileSize, 1);
+        npcArr.push(npc);
     }
 
     // Stores all the items in inventory
@@ -456,6 +451,7 @@ function keyPressed() {
 
 // Has start screen (stage = 0), game screen (stage = 1), and inventory screen (stage = 2)
 // Displays world, overlay, player, animals, and any plants that were planted and are growing
+let lock = 0;
 function draw() {
 
     if (stage === 0) {
@@ -467,11 +463,11 @@ function draw() {
         background(113, 143, 63);
         push();
         translate(offsetX, offsetY);
-        drawWorld(world, tilesetArtwork);
+        drawWorld();
         pop();
 
         // the character will always be drawn in the middle of the screen
-        player.moveAndDisplay();
+        player.moveAndDisplay(playerTileSizeX, playerTileSizeY);
         plantArr.forEach(plant => {
             plant.display();
         });
@@ -479,12 +475,12 @@ function draw() {
             animal.moveAndDisplay();
             animal.displayEmote();
         })
-        customerArr.forEach(customer => {
-            customer.display();
-            if (customer.isAtEnd()) {
-                customer.newDest();
-            } else if (customer.walking) {
-                customer.move();
+        npcArr.forEach(npc => {
+            npc.display();
+            if (npc.isAtEnd()) {
+                npc.newDest();
+            } else if (npc.walking) {
+                npc.move();
             }
         })
         displayTime();
@@ -518,8 +514,23 @@ function draw() {
         background(113, 143, 63);
         push();
         // translate(offsetX, offsetY);
-        drawWorld(kitchen, kitchenArtWork);
+        drawKitchen();
         pop();
+
+        player.tileSize = kitchenTileSize;
+        player.moveAndDisplayKitchen(60, 60);
+
+        if (!lock) {
+            let customer = new NPC(8, 7, 0, 3, kitchenTileSize, 2);
+            customerArr.push(customer);
+            lock = 1;
+        }
+        customerArr.forEach(customer => {
+            customer.displayKitchen();
+            if (customer.walking) {
+                customer.move();
+            }
+        })
 
         // imageMode(CORNER);
         // image(kitchenArtWork, 0, 0);
@@ -540,33 +551,41 @@ function draw() {
  */
 
 // Draw the entire world using the 2D array above
-let solids = 0, all = 0;
-let lock = true;
-function drawWorld(world, tilesetArtwork) {
+function drawWorld() {
     for (let y = 0; y < world.length; y++) {
         for (let x = 0; x < world[y].length; x++) {
             // extract the tile here
             let id = world[y][x];
-            drawTile(tilesetArtwork, id, worldTileSize, worldTileSize, x * worldTileSize, y * worldTileSize);
+            drawTile(tilesetArtwork, id, worldTileSize, worldTileSize,
+                x * worldTileSize, y * worldTileSize, worldTileSize, worldTileSize);
 
             // also draw the overlay here
             let idOverlay = overlay[y][x];
-            drawTile(tilesetArtwork, idOverlay, worldTileSize, worldTileSize, x * worldTileSize, y * worldTileSize);
+            drawTile(tilesetArtwork, idOverlay, worldTileSize, worldTileSize,
+                x * worldTileSize, y * worldTileSize, worldTileSize, worldTileSize);
+        }
+    }
+}
 
-            if (lock) {
-                if (isSolid(world[y][x])) {
-                    solids++;
-                } else {
-                    all++
-                }
-            }
+function drawKitchen() {
+    for (let y = 0; y < kitchen.length; y++) {
+        for (let x = 0; x < kitchen[y].length; x++) {
+            // extract the tile here
+            let id = kitchen[y][x];
+            drawTile(kitchenArtWork, id, kitchenTileSize, kitchenTileSize,
+                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize,);
+
+            // also draw the overlay here
+            let idOverlay = overlay[y][x];
+            drawTile(kitchenArtWork, idOverlay, kitchenTileSize, kitchenTileSize,
+                x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize,);
         }
     }
 }
 
 // Draw tile with size `tileSizeX`, `tileSizeY` with an ID of `id` 
 // extracted from the image `img`, at screen position `screenX`, `screenY`
-function drawTile(img, id, tileSizeX, tileSizeY, screenX, screenY) {
+function drawTile(img, id, tileSizeX, tileSizeY, screenX, screenY, displayX, displayY) {
     // step 1: figure out how many tiles are on each row of our image
     let tilesPerRow = int(img.width / tileSizeX);
 
@@ -576,8 +595,8 @@ function drawTile(img, id, tileSizeX, tileSizeY, screenX, screenY) {
     let imageY = int(id / tilesPerRow) * tileSizeY;
 
     // step 3: draw the desired tile
-    image(img, screenX, screenY, tileSizeX, tileSizeY,
-        imageX, imageY, tileSizeX, tileSizeY);
+    image(img, screenX, screenY, displayX, displayY,
+        imageX, imageY, tileSizeX, tileSizeY,);
 }
 
 // Setup our overlay array
@@ -598,13 +617,39 @@ function setupOverlay() {
     }
 }
 
+function setupOverlayKitchen() {
+    // set up the overlay to be the same size as the world, just filled with -1's
+    for (let y = 0; y < kitchen.length; y++) {
+        overlayKitchen.push([]);
+        for (let x = 0; x < kitchen[y].length; x++) {
+            // adds Gates to our overlay, and deletes it from the world array
+            // so that it's interactable/ changable
+            if (kitchen[y][x] === 4299) {
+                overlayKitchen[y].push(4299);
+                kitchen[y][x] = 607;
+            } else {
+                overlayKitchen[y].push(-1);
+            }
+        }
+    }
+}
+
 // Obtain the world tile ID at a given screen coordinate
 function getWorldTileAtPosition(screenX, screenY) {
-    // convert screen coordinates into array coordinates
-    let arrayX = int((screenX - offsetX) / worldTileSize);
-    let arrayY = int((screenY - offsetY) / worldTileSize);
+    let id;
+    if (stage === 3) {
+        // convert screen coordinates into array coordinates
+        let arrayX = int(screenX / kitchenTileSize);
+        let arrayY = int(screenY / kitchenTileSize);
 
-    let id = world[arrayY][arrayX];
+        id = kitchen[arrayY][arrayX];
+    } else {
+        // convert screen coordinates into array coordinates
+        let arrayX = int((screenX - offsetX) / worldTileSize);
+        let arrayY = int((screenY - offsetY) / worldTileSize);
+
+        id = world[arrayY][arrayX];
+    }
     return id;
 }
 
@@ -665,6 +710,15 @@ function isSolid(id) {
     return false;
 }
 
+// Returns true if solid tile, false if not solid
+function isSolidKitchen(id) {
+    // return true for all solid tiles
+    if (id === 40) {
+        return true;
+    }
+    return false;
+}
+
 // Returns true if there are no animals in that coordinate, false otherwise
 function noAnimals(realX, realY, selfTileSize) {
     for (let index = 0; index < animalArr.length; index++) {
@@ -672,6 +726,10 @@ function noAnimals(realX, realY, selfTileSize) {
             return false;
         }
     }
+    return true;
+}
+
+function noCustomers(realX, realY, selfTileSize) {
     return true;
 }
 
@@ -884,7 +942,7 @@ class Player {
         }
     }
 
-    moveAndDisplay() {
+    moveAndDisplay(displayX, displayY) {
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
@@ -892,7 +950,7 @@ class Player {
 
         // movement
         if (keyIsDown(68)) {
-            // ellipse(this.right, this.middleY, 5, 5);
+            ellipse(this.right, this.middleY, 5, 5);
             let id = getWorldTileAtPosition(this.right, this.middleY);
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolid(id) && !isSolid(id2) && noAnimals(this.right - offsetX, this.middleY - offsetY, this.tileSize)) {
@@ -906,8 +964,6 @@ class Player {
                 this.direction = 1;
             }
             this.walking = true;
-
-
 
         }
         if (keyIsDown(65)) {
@@ -974,10 +1030,96 @@ class Player {
                 this.pauseCounter = this.pauseCounterMax;
             }
 
-            drawTile(playerArtwork, (this.direction * 4) + this.currentFrame, playerTileSizeX, playerTileSizeY, this.x, this.y);
+            drawTile(playerArtwork, (this.direction * 4) + this.currentFrame,
+                playerTileSizeX, playerTileSizeY, this.x, this.y, displayX, displayY);
         } else {
+            drawTile(playerArtwork, (this.direction * 4), playerTileSizeX, playerTileSizeY,
+                this.x, this.y, displayX, displayY);
+        }
+        imageMode(CORNER);
+    }
 
-            drawTile(playerArtwork, (this.direction * 4), playerTileSizeX, playerTileSizeY, this.x, this.y);
+    moveAndDisplayKitchen(displayX, displayY) {
+        imageMode(CENTER);
+        this.facing = [];
+        this.computeSensors();
+        this.walking = false;
+
+        // movement
+        if (keyIsDown(68)) {
+            ellipse(this.right, this.middleY, 5, 5);
+            let id = getWorldTileAtPosition(this.right, this.middleY);
+            let id2 = getOverlayTileAtPosition(this.right, this.middleY);
+            if (!isSolidKitchen(id) && !isSolidKitchen(id2)
+                && noCustomers(this.right - offsetX, this.middleY - offsetY, this.tileSize)) {
+                this.x += this.speed;
+            }
+            if (!keyIsDown(87) && !keyIsDown(83)) {
+                this.direction = 1;
+            }
+            this.walking = true;
+
+        }
+        if (keyIsDown(65)) {
+            // ellipse(this.left, this.middleY, 5, 5);
+            let id = getWorldTileAtPosition(this.left, this.middleY);
+            let id2 = getOverlayTileAtPosition(this.left, this.middleY);
+            if (!isSolidKitchen(id) && !isSolidKitchen(id2)
+                && noCustomers(this.left - offsetX, this.middleY - offsetY, this.tileSize)) {
+                this.x -= this.speed;
+            }
+            if (!keyIsDown(87) && !keyIsDown(83)) {
+                this.direction = 2;
+            }
+            this.walking = true;
+
+        }
+        if (keyIsDown(87)) {
+            // ellipse(this.middleX, this.up, 5, 5);
+            let id = getWorldTileAtPosition(this.middleX, this.up);
+            let id2 = getOverlayTileAtPosition(this.middleX, this.up);
+            if (!isSolidKitchen(id) && !isSolidKitchen(id2)
+                && noCustomers(this.middleX - offsetX, this.up - offsetY, this.tileSize)) {
+                this.y -= this.speed;
+            }
+            if (!keyIsDown(68) && !keyIsDown(65)) {
+                this.direction = 3;
+            }
+            this.walking = true;
+
+        }
+        if (keyIsDown(83)) {
+            // ellipse(this.middleX, this.down, 5, 5);
+            let id = getWorldTileAtPosition(this.middleX, this.down);
+            let id2 = getOverlayTileAtPosition(this.middleX, this.down);
+            if (!isSolidKitchen(id) && !isSolidKitchen(id2)
+                && noCustomers(this.middleX - offsetX, this.down - offsetY, this.tileSize)) {
+                this.y += this.speed;
+            }
+            if (!keyIsDown(68) && !keyIsDown(65)) {
+                this.direction = 0;
+            }
+            this.walking = true;
+
+        }
+
+        // frame animation
+        if (this.walking) {
+            this.pauseCounter--;
+
+            if (this.pauseCounter <= 0) {
+                this.currentFrame += 1;
+                if (this.currentFrame >= this.totalFrames) {
+                    this.currentFrame = 0;
+                }
+                this.pauseCounter = this.pauseCounterMax;
+            }
+
+            drawTile(playerArtwork, (this.direction * 4) + this.currentFrame,
+                playerTileSizeX, playerTileSizeY, this.x, this.y, displayX, displayY);
+        } else {
+            drawTile(playerArtwork, (this.direction * 4), playerTileSizeX, playerTileSizeY,
+                this.x, this.y, displayX, displayY);
         }
         imageMode(CORNER);
     }
@@ -1179,11 +1321,13 @@ class Animal {
             }
             drawTile(this.animalInfo.img, (directionTemp * this.tilesPerRow) + this.spritePos,
                 this.animalInfo.tileSize, this.animalInfo.tileSize,
-                this.x + offsetX, this.y + offsetY);
+                this.x + offsetX, this.y + offsetY,
+                this.animalInfo.tileSize, this.animalInfo.tileSize,);
         } else {
             drawTile(this.animalInfo.img, (this.direction * this.tilesPerRow) + this.spritePos,
                 this.animalInfo.tileSize, this.animalInfo.tileSize,
-                this.x + offsetX, this.y + offsetY);
+                this.x + offsetX, this.y + offsetY,
+                this.animalInfo.tileSize, this.animalInfo.tileSize,);
         }
 
         // the animal is walking
@@ -1297,9 +1441,10 @@ class Item {
 }
 
 class NPC {
-    constructor(arrayX, arrayY, destX, destY, world) {
+    constructor(arrayX, arrayY, destX, destY, worldTileSize, mode) {
         this.x = arrayX * worldTileSize + worldTileSize / 2;
         this.y = arrayY * worldTileSize + worldTileSize / 2;
+        this.mode = mode;
         // this.nodeX = int( this.x / cellSize );
         // this.nodeY = int( this.y / cellSize );
         this.destX = destX;
@@ -1307,7 +1452,7 @@ class NPC {
         this.nodeX = int(this.x / worldTileSize);
         this.nodeY = int(this.y / worldTileSize);
         this.grid = [];
-        this.initGrid(world, world[0].length, world.length);
+        this.initGrid();
         this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
         // this.customerFindPath();
         this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
@@ -1505,24 +1650,48 @@ class NPC {
         return gridCopy;
     }
 
-    initGrid(world, gridWidth, gridHeight) {
-        for (var y = 0; y < gridHeight; y++) {
-            var newRow = [];
-            for (var x = 0; x < gridWidth; x++) {
-                // each cell in our grid holds an object to define its color, whether it is solid, and pathing info, including pointers to the next cell that will bring us closer to the optimal path to
-                // the desired end point of the maze
-                // we assume at the beginning that we don't know how far it is to get to the end (-1)
-                // and we default these pointers to "unknown"
-                newRow.push({ solid: isSolid(world[y][x]), stepsToEnd: -1, nextX: "unknown", nextY: "unknown", nextDirection: -1 });
+    initGrid() {
+        let gridWidth, gridHeight;
+        if (this.mode === 2) {
+            gridWidth = kitchen[0].length, gridHeight = kitchen.length;
+            for (var y = 0; y < gridHeight; y++) {
+                var newRow = [];
+                for (var x = 0; x < gridWidth; x++) {
+                    // each cell in our grid holds an object to define its color, whether it is solid, and pathing info, including pointers to the next cell that will bring us closer to the optimal path to
+                    // the desired end point of the maze
+                    // we assume at the beginning that we don't know how far it is to get to the end (-1)
+                    // and we default these pointers to "unknown"
+                    newRow.push({ solid: (isSolidKitchen(kitchen[y][x]) || isSolidKitchen(overlayKitchen[y][x])) ? true : false, stepsToEnd: -1, nextX: "unknown", nextY: "unknown", nextDirection: -1 });
+                }
+                this.grid.push(newRow);
             }
-            this.grid.push(newRow);
+        } else {
+            gridWidth = world[0].length, gridHeight = world.length;
+            for (var y = 0; y < gridHeight; y++) {
+                var newRow = [];
+                for (var x = 0; x < gridWidth; x++) {
+                    // each cell in our grid holds an object to define its color, whether it is solid, and pathing info, including pointers to the next cell that will bring us closer to the optimal path to
+                    // the desired end point of the maze
+                    // we assume at the beginning that we don't know how far it is to get to the end (-1)
+                    // and we default these pointers to "unknown"
+                    newRow.push({ solid: isSolid(world[y][x]) || isSolid(overlay[y][x]), stepsToEnd: -1, nextX: "unknown", nextY: "unknown", nextDirection: -1 });
+                }
+                this.grid.push(newRow);
+            }
         }
     }
 
     recomputePath() {
+        let pathTileSize;
         // compute new node value
-        this.nodeX = int(this.x / worldTileSize);
-        this.nodeY = int(this.y / worldTileSize);
+        if (this.mode === 2) {
+            pathTileSize = kitchenTileSize;
+        } else {
+            pathTileSize = worldTileSize;
+        }
+
+        this.nodeX = int(this.x / pathTileSize);
+        this.nodeY = int(this.y / pathTileSize);
 
         // add this to our node history
         this.nodeHistory.push([this.nodeX, this.nodeY]);
@@ -1534,8 +1703,8 @@ class NPC {
             for (var i = this.nodeHistory.length - 1; i >= 0; i--) {
                 if (grid[this.nodeHistory[i][0]][this.nodeHistory[i][1]].solid === false) {
                     // move back to this previous node
-                    this.desiredX = this.nodeHistory[i][0] * worldTileSize + worldTileSize / 2;
-                    this.desiredY = this.nodeHistory[i][1] * worldTileSize + worldTileSize / 2;
+                    this.desiredX = this.nodeHistory[i][0] * pathTileSize + pathTileSize / 2;
+                    this.desiredY = this.nodeHistory[i][1] * pathTileSize + pathTileSize / 2;
                     break;
                 }
             }
@@ -1544,8 +1713,8 @@ class NPC {
         }
         else {
             // compute new desired value
-            this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * worldTileSize + worldTileSize / 2;
-            this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
+            this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * pathTileSize + pathTileSize / 2;
+            this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * pathTileSize + pathTileSize / 2;
         }
     }
 
@@ -1618,7 +1787,48 @@ class NPC {
         // draw image
         drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
             this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,
-            this.x + offsetX, this.y + offsetY);
+            this.x + offsetX, this.y + offsetY,
+            this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,);
+
+        // the NPC is walking
+        if (this.walking) {
+            if (this.currentFrames >= this.maxFrames) {
+                if (this.spritePos + 1 < progression.length) {
+                    this.spritePos++;
+                } else {
+                    this.spritePos = 0;
+                }
+                this.currentFrames = 0;
+            }
+            this.currentFrames++;
+        } else {
+            this.spritePos = 0;
+            if (this.idleTimer < this.maxIdleTimer) {
+                this.idleTimer++;
+                if (floor(random(100)) < 1) {
+                    this.direction = floor(random(4));
+                }
+            } else {
+                this.walking = true;
+                this.idleTimer = 0;
+            }
+        }
+        imageMode(CORNER);
+    }
+
+    // NPC walking animation
+    displayKitchen() {
+        imageMode(CENTER);
+        let progression = [1, 0, 1, 2];
+        if (this.charID === 1 && this.direction === 3) {
+            progression = [1, 0];
+        }
+
+        // draw image
+        drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
+            this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,
+            this.x, this.y,
+            this.npcInfo.tileSizeX * 60 / 32, this.npcInfo.tileSizeY * 60 / 32,);
 
         // the NPC is walking
         if (this.walking) {
