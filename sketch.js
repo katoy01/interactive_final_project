@@ -28,6 +28,7 @@ let wheat;
 let eggsalad, bruschetta, cheesybread;
 let cheesybread_plate, eggsalad_plate, bruschetta_plate;
 let pot;
+let recipeBookPNG;
 
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
@@ -186,8 +187,8 @@ let world = [
 let kitchen = [
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
     [50, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 50],
-    [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 0, 1, 30, 30, 30, 16, 50],
-    [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 7, 8, 37, 37, 37, 23, 50],
+    [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 30, 1, 30, 30, 30, 16, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 37, 8, 37, 37, 37, 23, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
@@ -361,6 +362,8 @@ function preload() {
 
     pot_empty = loadImage('./assets/image/pot_empty.png');
     pot_full = loadImage('./assets/image/pot_full.png');
+
+    recipeBookPNG = loadImage('./assets/image/recipebook.png');
 }
 
 // Create canvas, build world and overlay,
@@ -464,9 +467,18 @@ function mouseClicked() {
         selectedStatus = false;
         numInventorySelected = -1;
     }
-    else if (stage === 3 && pot.insidePotArr.length > 0 && pot.cooking === 0) {
+    else if (stage === 3) {
         // cooking = true;
-        pot.startCooking();
+        if (pot.insidePotArr.length > 0 && pot.cooking === 0 && potPopUp) {
+            pot.startCooking();
+        }
+        else if (menuPopUp) {
+            if (mouseX > width / 2 && menuShowing < pot.recipeBook.length - 1) {
+                menuShowing++;
+            } else if (mouseX < width / 2 && menuShowing > 0) {
+                menuShowing--;
+            }
+        }
     }
 }
 
@@ -497,6 +509,7 @@ function keyPressed() {
         }
         else if (keyCode === 27) {
             potPopUp = false;
+            menuPopUp = false;
             pot.insidePotArr = [];
             ingredientSelected = false;
         } else if (keyCode === 8) {
@@ -607,6 +620,9 @@ function draw() {
         if (potPopUp) {
             showIngredients();
         }
+        if (menuPopUp) {
+            showMenu();
+        }
 
         // imageMode(CORNER);
         // image(kitchenArtWork, 0, 0);
@@ -655,6 +671,10 @@ function drawKitchen() {
             let idOverlay = overlayKitchen[y][x];
             drawTile(kitchenArtWork, idOverlay, worldTileSize, worldTileSize,
                 x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
+            if (idOverlay === 7) {
+                drawTile(recipeBookPNG, 0, recipeBookPNG.width, recipeBookPNG.height,
+                    x * kitchenTileSize, y * kitchenTileSize - kitchenTileSize * (3 / 4), kitchenTileSize, kitchenTileSize);
+            }
         }
     }
 }
@@ -853,6 +873,7 @@ function noCustomers(realX, realY, selfTileSize) {
 
 let potPopUp = false;
 let recipePopUp = false;
+let menuPopUp = false;
 // Player interacts with overlay at position `x`,`y` (triggered once after pressing `enter` button)
 function interactOverlay(x, y) {
     if (stage === 1) {
@@ -913,6 +934,12 @@ function interactOverlay(x, y) {
             else if (ingredientSelected && pot.insidePotArr.length < 3
                 && inventoryArray[numIngredientSelected].amount >= 1) {
                 pot.insidePotArr.push(numIngredientSelected);
+            }
+        }
+        else if (getOverlayTileAtPosition(x, y) === 7) {
+            if (!menuPopUp) {
+                menuShowing = 0;
+                menuPopUp = !menuPopUp;
             }
         }
     }
@@ -1025,6 +1052,17 @@ function displayInsidePot(barStartX, barStartY, dist) {
     for (let i = 0; i < pot.insidePotArr.length; i++) {
         image(inventoryArray[pot.insidePotArr[i]].graphic, barStartX + 5 + (dist * i), barStartY + 5);
     }
+}
+
+let menuShowing = 0;
+function showMenu() {
+    imageMode(CENTER);
+
+    let img = pot.recipeBook[menuShowing].menu;
+    drawTile(img, 0, img.width, img.height, width / 2, height / 2, width / 2, height / 2);
+
+
+    imageMode(CORNER);
 }
 
 
