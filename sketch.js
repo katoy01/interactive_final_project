@@ -705,7 +705,7 @@ function getOverlayTileAtPosition(screenX, screenY) {
         let arrayX = int((screenX - kitchenOffsetX) / kitchenTileSize);
         let arrayY = int((screenY - kitchenOffsetY) / kitchenTileSize);
 
-        id = kitchen[arrayY][arrayX];
+        id = overlayKitchen[arrayY][arrayX];
     } else {
         // convert screen coordinates into array coordinates
         let arrayX = int((screenX - offsetX) / worldTileSize);
@@ -767,8 +767,7 @@ function isSolid(id) {
 function isSolidKitchen(id) {
     // return true for all solid tiles
     if (id === 50 || id === 47 || id === 48 || id === 0 || id === 17 ||
-        id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23 
-        || id === 35 || id === 8 || id === 9 || id === 23 || id === 37 || id === 24 || id === 7) {
+        id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23) {
         return true;
     }
     return false;
@@ -1186,7 +1185,7 @@ class Player {
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
-        this.up = int(this.y - 2);
+        this.up = int(this.y - 20);
         this.walking = false;
 
         // movement
