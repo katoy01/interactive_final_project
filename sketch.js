@@ -77,6 +77,9 @@ let kitchenTileSize = 60;
 let offsetX = -495;
 let offsetY = -685;
 let minOffsetX, minOffsetY;
+let kitchenOffsetX = 0;
+let kitchenOffsetY = 0;
+let minOffsetXKitchen, minOffsetYKitchen;
 
 // The farm world 
 // made with tiles extracted from `/assets/image/global.png`
@@ -680,8 +683,8 @@ function getWorldTileAtPosition(screenX, screenY) {
     let id;
     if (stage === 3) {
         // convert screen coordinates into array coordinates
-        let arrayX = int(screenX / kitchenTileSize);
-        let arrayY = int(screenY / kitchenTileSize);
+        let arrayX = int((screenX - kitchenOffsetX) / kitchenTileSize);
+        let arrayY = int((screenY - kitchenOffsetY) / kitchenTileSize);
 
         id = kitchen[arrayY][arrayX];
     } else {
@@ -696,11 +699,20 @@ function getWorldTileAtPosition(screenX, screenY) {
 
 // Obtain the overlay tile ID at a given screen coordinate
 function getOverlayTileAtPosition(screenX, screenY) {
-    // convert screen coordinates into array coordinates
-    let arrayX = int((screenX - offsetX) / worldTileSize);
-    let arrayY = int((screenY - offsetY) / worldTileSize);
+    let id;
+    if (stage === 3) {
+        // convert screen coordinates into array coordinates
+        let arrayX = int((screenX - kitchenOffsetX) / kitchenTileSize);
+        let arrayY = int((screenY - kitchenOffsetY) / kitchenTileSize);
 
-    let id = overlay[arrayY][arrayX];
+        id = kitchen[arrayY][arrayX];
+    } else {
+        // convert screen coordinates into array coordinates
+        let arrayX = int((screenX - offsetX) / worldTileSize);
+        let arrayY = int((screenY - offsetY) / worldTileSize);
+
+        id = overlay[arrayY][arrayX];
+    }
     return id;
 }
 
@@ -1166,6 +1178,7 @@ class Player {
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
+        this.up = int(this.y - 2);
         this.walking = false;
 
         // movement
