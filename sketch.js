@@ -796,6 +796,13 @@ function noAnimals(realX, realY, selfTileSize) {
 }
 
 function noCustomers(realX, realY, selfTileSize) {
+    for (let index = 0; index < customerArr.length; index++) {
+        const customer = customerArr[index];
+        if (dist(realX, realY, customer.x, customer.y)
+            <= (customer.npcInfo.tileSizeX / 2 + selfTileSize / 2)) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -1046,10 +1053,10 @@ class Player {
     computeSensors() {
         this.middleX = this.x;
         this.middleY = this.y;
-        this.left = int(this.x - this.tileSize / 2 - 2);
-        this.right = int(this.x + this.tileSize / 2 + 2);
-        this.up = int(this.y - this.tileSize / 2 - 2);
-        this.down = int(this.y + this.tileSize / 2 + 2);
+        this.left = int(this.x - this.tileSize / 4 - 2);
+        this.right = int(this.x + this.tileSize / 4 + 2);
+        this.up = int(this.y - this.tileSize / 4 - 2);
+        this.down = int(this.y + this.tileSize / 4 + 2);
     }
 
     changeEnvironment() {
@@ -1187,7 +1194,7 @@ class Player {
             let id = getWorldTileAtPosition(this.right, this.middleY);
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
-                && noCustomers(this.right - offsetX, this.middleY - offsetY, this.tileSize)) {
+                && noCustomers(this.right - kitchenOffsetX, this.middleY - kitchenOffsetY, this.tileSize)) {
                 this.x += speed;
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
@@ -1201,7 +1208,7 @@ class Player {
             let id = getWorldTileAtPosition(this.left, this.middleY);
             let id2 = getOverlayTileAtPosition(this.left, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
-                && noCustomers(this.left - offsetX, this.middleY - offsetY, this.tileSize)) {
+                && noCustomers(this.left - kitchenOffsetX, this.middleY - kitchenOffsetY, this.tileSize)) {
                 this.x -= speed;
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
@@ -1215,7 +1222,7 @@ class Player {
             let id = getWorldTileAtPosition(this.middleX, this.up);
             let id2 = getOverlayTileAtPosition(this.middleX, this.up);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
-                && noCustomers(this.middleX - offsetX, this.up - offsetY, this.tileSize)) {
+                && noCustomers(this.middleX - kitchenOffsetX, this.up - kitchenOffsetY, this.tileSize)) {
                 this.y -= speed;
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
@@ -1229,7 +1236,7 @@ class Player {
             let id = getWorldTileAtPosition(this.middleX, this.down);
             let id2 = getOverlayTileAtPosition(this.middleX, this.down);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
-                && noCustomers(this.middleX - offsetX, this.down - offsetY, this.tileSize)) {
+                && noCustomers(this.middleX - kitchenOffsetX, this.down - kitchenOffsetY, this.tileSize)) {
                 this.y += speed;
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
