@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 3;
+let stage = 1;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -71,14 +71,14 @@ let field_theme;
 let worldTileSize = 32;
 let inventoryTileSize = 32;
 let playerTileSizeX = 32, playerTileSizeY = 32;
-let kitchenTileSize = 60;
+let kitchenTileSize = 80;
 
 // offsets for screen scrolling
 let offsetX = -495;
 let offsetY = -685;
 let minOffsetX, minOffsetY;
-let kitchenOffsetX = 0;
-let kitchenOffsetY = 0;
+let kitchenOffsetX = 0 - (kitchenTileSize * 3 + kitchenTileSize / 2);
+let kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize / 2);
 let minOffsetXKitchen, minOffsetYKitchen;
 
 // The farm world 
@@ -173,7 +173,7 @@ let world = [
     //^40th row
 ]
 
-// 16 x 8
+// 18 x 9
 // 512 x 256
 let kitchen = [
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
@@ -376,9 +376,8 @@ function setup() {
     }
     nPCs[1].resize(138, 128);
 
-    kitchenTileSize = height / kitchen.length;
-    // kitchenTileSize = 100
-    console.log(kitchenTileSize);
+    // kitchenTileSize = height / kitchen.length;
+    // kitchenTileSize = 80
     // kitchenArtWork.resize(kitchenTileSize * 7, kitchenTileSize * 8);
     // kitchenArtWork.resize(420, 480);
 
@@ -393,6 +392,9 @@ function setup() {
 
     minOffsetX = (width) - (world[0].length * worldTileSize);
     minOffsetY = (height) - (world.length * worldTileSize);
+
+    minOffsetXKitchen = (width) - (kitchen[0].length * kitchenTileSize);
+    minOffsetYKitchen = (height) - (kitchen.length * kitchenTileSize);
 
     // create our player
     player = new Player(width / 2, height / 2);
@@ -457,15 +459,16 @@ function keyPressed() {
     }
     else if (stage === 3) {
         if (keyCode === 13) {
-            changeStage();
+            player.changeEnvironment();
         }
         else if (keyCode >= 49 && keyCode <= 56) {
             ingredientSelected = true;
-            numIngredientSelected = keyCode - 49;
+            numIngredientSelected = keyCode - 46;
         }
         else if (keyCode === 27) {
+            potPopUp = false;
+            insidePotArr = [];
             ingredientSelected = false;
-            numIngredientSelected = -1;
         }
     }
 }
@@ -473,7 +476,7 @@ function keyPressed() {
 function changeStage() {
     if (stage === 1) {
         stage = 3;
-        player.y = height - 90;
+        player.y = height - kitchenTileSize;
     } else if (stage === 3) {
         player.x = 480;
         player.y = 340;
@@ -548,7 +551,7 @@ function draw() {
     if (stage === 3) {
         background(113, 143, 63);
         push();
-        // translate(offsetX, offsetY);
+        translate(kitchenOffsetX, kitchenOffsetY);
         drawKitchen();
         pop();
 
@@ -562,12 +565,15 @@ function draw() {
         }
         customerArr.forEach(customer => {
             customer.displayKitchen();
+            customer.displayEmote();
             if (customer.walking) {
                 customer.move();
             }
         })
 
-        showIngredients();
+        if (potPopUp) {
+            showIngredients();
+        }
 
         // imageMode(CORNER);
         // image(kitchenArtWork, 0, 0);
@@ -757,7 +763,8 @@ function isSolid(id) {
         || id == 2170 || id == 2171 || id == 2172 || id == 2173 || id == 2174 || id == 2318 || id == 2319 || id == 2320 || id == 2321 || id == 2322 || id == 2466
         || id == 2467 || id == 2468 || id == 2469 || id == 2470 || id == 397 || id == 398 || id == 399 || id == 400 || id == 544 || id == 545
         || id == 546 || id == 546 || id == 547 || id == 548 || id == 692 || id == 693 || id == 694 || id == 695 || id == 696 || id == 840
-        || id == 841 || id == 842 || id == 843 || id == 844 || id == 988 || id == 989 || id == 900 || id == 991 || id == 992) {
+        || id == 841 || id == 842 || id == 843 || id == 844 || id == 988 || id == 989 || id == 900 || id == 991 || id == 992
+        || id == 1936 || id == 1947 || id == 2226 || id == 2369 || id == 4594 || id == 2222 || id == 2732 || id == 2733 || id == 2734 || id == 1640) {
         return true;
     }
     return false;
@@ -767,7 +774,8 @@ function isSolid(id) {
 function isSolidKitchen(id) {
     // return true for all solid tiles
     if (id === 50 || id === 47 || id === 48 || id === 0 || id === 17 ||
-        id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23) {
+        id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23
+        || id === 35 || id === 8 || id === 9 || id === 23 || id === 37 || id === 24 || id === 7) {
         return true;
     }
     return false;
@@ -806,6 +814,9 @@ function noCustomers(realX, realY, selfTileSize) {
     return true;
 }
 
+let potPopUp = false;
+let recipePopUp = false;
+let insidePotArr = [];
 // Player interacts with overlay at position `x`,`y` (triggered once after pressing `enter` button)
 function interactOverlay(x, y) {
     if (stage === 1) {
@@ -840,7 +851,6 @@ function interactOverlay(x, y) {
             }
         }
         else if (getWorldTileAtPosition(x, y) === 2468) {
-            console.log("HELLO");
             changeStage();
         }
     }
@@ -853,7 +863,17 @@ function interactOverlay(x, y) {
         }
     }
     else if (stage === 3) {
-
+        // console.log(getOverlayTileAtPosition(x, y));
+        if (getOverlayTileAtPosition(x, y) === 24) {
+            if (!potPopUp) {
+                ingredientSelected = false;
+                potPopUp = !potPopUp;
+            }
+            else if (ingredientSelected && insidePotArr.length < 3
+                && inventoryArray[numIngredientSelected].amount >= 1) {
+                insidePotArr.push(numIngredientSelected);
+            }
+        }
     }
 }
 
@@ -912,12 +932,14 @@ function showIngredients() {
     let tileDist = 5;
     let produceNum = 5;
     let barWidth = tileDist + (inventoryTileSize + tileDist) * produceNum, barHeight = 42;
-    let barStartX = width / 2 - barWidth / 2, barStartY = height - barHeight;
+    let subBarWidth = tileDist + (inventoryTileSize + tileDist) * 3;
+    let barStartX = player.x - barWidth / 2, barStartY = player.y - barHeight - kitchenTileSize;
 
     strokeWeight(5);
     stroke(120, 65, 0);
     fill(150, 75, 0);
     rect(barStartX, barStartY, barWidth, barHeight);
+    rect(barStartX + (inventoryTileSize + tileDist), barStartY - (inventoryTileSize + tileDist * 3), subBarWidth, barHeight);
 
     strokeWeight(2);
     for (let i = 3; i < 8; i++) {
@@ -926,20 +948,17 @@ function showIngredients() {
         textSize(15);
         text(inventoryArray[i].amount, barStartX + 6 + ((tileDist + inventoryTileSize) * (i - 3)), barStartY + 13);
     }
-    displayIngredientSelected(numIngredientSelected);
+    displayIngredientSelected(numIngredientSelected - 3, barStartX, barStartY);
+    displayInsidePot(barStartX + (inventoryTileSize + tileDist),
+        barStartY - (inventoryTileSize + tileDist * 3), (tileDist + inventoryTileSize));
     noStroke();
 }
 
 // Displays a white box around selected item in inventory
-function displayIngredientSelected(itemNum) {
+function displayIngredientSelected(itemNum, barStartX, barStartY) {
     if (!ingredientSelected) {
         return;
     }
-
-    let tileDist = 5;
-    let produceNum = 5;
-    let barWidth = tileDist + (inventoryTileSize + tileDist) * produceNum, barHeight = 42;
-    let barStartX = width / 2 - barWidth / 2, barStartY = height - barHeight;
 
     stroke(255, 255, 255, 200);
     strokeWeight(3);
@@ -958,6 +977,13 @@ function displayIngredientSelected(itemNum) {
     line(xMax, yMin, xMax, yMax);
 
     noStroke();
+}
+
+function displayInsidePot(barStartX, barStartY, dist) {
+    strokeWeight(2);
+    for (let i = 0; i < insidePotArr.length; i++) {
+        image(inventoryArray[insidePotArr[i]].graphic, barStartX + 5 + (dist * i), barStartY + 5);
+    }
 }
 
 
@@ -1075,11 +1101,13 @@ class Player {
             tempY = this.up;
         }
         interactOverlay(tempX, tempY);
-        for (let index = 0; index < animalArr.length; index++) {
-            animalArr[index].lookAtPlayer(tempX, tempY);
-        }
-        for (let index = 0; index < npcArr.length; index++) {
-            npcArr[index].lookAtPlayer(tempX, tempY);
+        if (stage === 1) {
+            for (let index = 0; index < animalArr.length; index++) {
+                animalArr[index].lookAtPlayer(tempX, tempY);
+            }
+            for (let index = 0; index < npcArr.length; index++) {
+                npcArr[index].lookAtPlayer(tempX, tempY);
+            }
         }
     }
 
@@ -1181,11 +1209,12 @@ class Player {
     }
 
     moveAndDisplayKitchen() {
-        let speed = this.speed * (32 / 60);
+        let speed = this.speed / 2;
         imageMode(CENTER);
         this.facing = [];
         this.computeSensors();
-        this.up = int(this.y - 20);
+        this.up = int(this.y - 2);
+        this.down = int(this.y + kitchenTileSize / 2)
         this.walking = false;
 
         // movement
@@ -1195,7 +1224,11 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.right - kitchenOffsetX, this.middleY - kitchenOffsetY, this.tileSize)) {
-                this.x += speed;
+                if (kitchenOffsetX > minOffsetXKitchen && this.x === (width / 2)) {
+                    kitchenOffsetX -= speed;
+                } else {
+                    this.x += speed;
+                }
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
                 this.direction = 1;
@@ -1209,7 +1242,11 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.left, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.left - kitchenOffsetX, this.middleY - kitchenOffsetY, this.tileSize)) {
-                this.x -= speed;
+                if (kitchenOffsetX < 0 && this.x === (width / 2)) {
+                    kitchenOffsetX += speed;
+                } else {
+                    this.x -= speed;
+                }
             }
             if (!keyIsDown(87) && !keyIsDown(83)) {
                 this.direction = 2;
@@ -1223,7 +1260,11 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.middleX, this.up);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.middleX - kitchenOffsetX, this.up - kitchenOffsetY, this.tileSize)) {
-                this.y -= speed;
+                if (kitchenOffsetY < 0 && this.y === (height / 2)) {
+                    kitchenOffsetY += speed;
+                } else {
+                    this.y -= speed;
+                }
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
                 this.direction = 3;
@@ -1237,7 +1278,11 @@ class Player {
             let id2 = getOverlayTileAtPosition(this.middleX, this.down);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
                 && noCustomers(this.middleX - kitchenOffsetX, this.down - kitchenOffsetY, this.tileSize)) {
-                this.y += speed;
+                if (kitchenOffsetY > minOffsetYKitchen && this.y === (height / 2)) {
+                    kitchenOffsetY -= speed;
+                } else {
+                    this.y += speed;
+                }
             }
             if (!keyIsDown(68) && !keyIsDown(65)) {
                 this.direction = 0;
@@ -1907,7 +1952,7 @@ class NPC {
         this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * worldTileSize + worldTileSize / 2;
     }
 
-    // If the player presses `enter` in front of the animal
+    // If the player presses `enter` in front of the npc
     // make the npc look at the player (uses slope logic)
     lookAtPlayer(screenX, screenY) {
         let realX = screenX - offsetX;
@@ -1975,11 +2020,13 @@ class NPC {
     // there are no player at the place the npc is trying to move
     noPlayer(realX, realY) {
         if (stage === 1
-            && dist(realX, realY, player.x - offsetX, player.y - offsetY) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
+            && dist(realX, realY, player.x - offsetX, player.y - offsetY)
+            <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
             return false;
         }
         else if (stage === 3
-            && dist(realX, realY, player.x, player.y) <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
+            && dist(realX, realY, player.x - kitchenOffsetX, player.y - kitchenOffsetY)
+            <= player.tileSize / 2 + this.npcInfo.tileSizeX / 2) {
             return false;
         }
         return true;
@@ -2081,7 +2128,7 @@ class NPC {
         // draw image
         drawTile(nPCs[this.charID], (this.direction * this.npcInfo.tilesPerRow) + progression[this.spritePos],
             this.npcInfo.tileSizeX, this.npcInfo.tileSizeY,
-            this.x, this.y,
+            this.x + kitchenOffsetX, this.y + kitchenOffsetY,
             this.npcInfo.tileSizeX * kitchenTileSize / 32, this.npcInfo.tileSizeY * kitchenTileSize / 32,);
 
         // the NPC is walking
