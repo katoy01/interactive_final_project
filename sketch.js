@@ -384,7 +384,7 @@ function preload() {
 
     recipeBookPNG = loadImage('./assets/image/recipebook.png');
     fridge = loadImage('./assets/image/fridge_flipped.png');
-    door = loadImage('./assets/image/door.png');
+    door = loadImage('./assets/image/kitchendoor.png');
 
     shop_inside = loadImage('./assets/image/shop_inside.JPG');
 }
