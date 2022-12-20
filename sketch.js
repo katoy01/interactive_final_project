@@ -74,6 +74,8 @@ let walk;
 let field_theme;
 let cookingSound;
 let ding;
+let scrollSound;
+let disposal;
 
 // The size of each tile (32 x 32 square)
 // They are all the same now, which might seem redundant, but we were experimenting with tile sizes 
@@ -321,6 +323,9 @@ function preload() {
     field_theme = loadSound('./assets/sound/field_theme.wav');
     cookingSound = loadSound('./assets/sound/cookingSound.wav');
     ding = loadSound('./assets/sound/ding.wav');
+    scrollSound = loadSound('./assets/sound/scroll.wav');
+    disposal = loadSound('./assets/sound/disposal.wav');
+
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
