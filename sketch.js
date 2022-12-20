@@ -35,7 +35,6 @@ let shop_inside;
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
 let table, chair_right, chair_left;
-let storefront;
 let door;
 
 let arrow;
@@ -357,10 +356,9 @@ function preload() {
     npc1 = loadImage('./assets/image/npc1.png');
     npc2 = loadImage('./assets/image/npc2.png');
     npc3 = loadImage('./assets/image/npc3.png');
-    table = loadImage('./assets/image/newtable.png');
+    table = loadImage('./assets/image/table.png');
     chair_right = loadImage('./assets/image/chair1.png');
     chair_left = loadImage('./assets/image/chair2.png');
-    storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
 
     eggsalad = loadImage('./assets/image/eggsalad.png');
@@ -384,7 +382,7 @@ function preload() {
 
     recipeBookPNG = loadImage('./assets/image/recipebook.png');
     fridge = loadImage('./assets/image/fridge_flipped.png');
-    door = loadImage('./assets/image/door.png');
+    door = loadImage('./assets/image/kitchendoor.png');
 
     shop_inside = loadImage('./assets/image/shop_inside.JPG');
 }
@@ -727,7 +725,7 @@ function draw() {
         } else {
             text("Please enter what number", 197, height / 6 - 15);
             text("you want to select", 198, height / 6 + 10);
-            text("Press `esc` to go back", 195, height / 6 + +35);
+            text("Press `esc` to leave", 199, height / 6 + +35);
         }
         //fill(255);
     }
