@@ -35,7 +35,6 @@ let shop_inside;
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
 let table, chair_right, chair_left;
-let storefront;
 let door;
 
 let arrow;
@@ -360,7 +359,6 @@ function preload() {
     table = loadImage('./assets/image/table.png');
     chair_right = loadImage('./assets/image/chair1.png');
     chair_left = loadImage('./assets/image/chair2.png');
-    storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
 
     eggsalad = loadImage('./assets/image/eggsalad.png');
