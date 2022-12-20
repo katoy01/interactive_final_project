@@ -385,9 +385,9 @@ function preload() {
     bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
     cheesybread_plate = loadImage('./assets/image/cheesybread_plate.png');
 
-    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png');
-    bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
-    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
+    eggsalad_bubble = loadImage('./assets/image/bubble_eggsalad.png');
+    bruschetta_bubble = loadImage('./assets/image/bubble_bruschetta.png');
+    cheesybread_bubble = loadImage('./assets/image/bubble_cheesybread.png');
 
     eggsalad_menu = loadImage('./assets/image/1_eggsaladmenu.png');
     bruschetta_menu = loadImage('./assets/image/2_bruschettamenu.png');
@@ -2664,7 +2664,7 @@ class NPC {
                 this.direction = this.chair + 1;
                 let img = pot.recipeBook[this.order].bubble;
                 drawTile(img, 0, img.width, img.height, this.x + kitchenOffsetX + kitchenTileSize / 4,
-                    this.y + kitchenOffsetY - kitchenTileSize / 4, kitchenTileSize, kitchenTileSize * 1.5);
+                    this.y + kitchenOffsetY - kitchenTileSize / 4, kitchenTileSize * 1.5, kitchenTileSize * 2.25);
             }
         } else {
             this.spritePos = 0;
