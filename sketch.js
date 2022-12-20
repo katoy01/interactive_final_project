@@ -374,9 +374,9 @@ function preload() {
     bruschetta_plate = loadImage('./assets/image/bruschetta_plate.png');
     cheesybread_plate = loadImage('./assets/image/cheesybread_plate.png');
 
-    eggsalad_bubble = loadImage('./assets/image/eggsalad_bubble.png');
-    bruschetta_bubble = loadImage('./assets/image/bruschetta_bubble.png');
-    cheesybread_bubble = loadImage('./assets/image/cheesybread_bubble.png');
+    eggsalad_bubble = loadImage('./assets/image/bubble_eggsalad.png');
+    bruschetta_bubble = loadImage('./assets/image/bubble_bruschetta.png');
+    cheesybread_bubble = loadImage('./assets/image/bubble_cheesybread.png');
 
     eggsalad_menu = loadImage('./assets/image/1_eggsaladmenu.png');
     bruschetta_menu = loadImage('./assets/image/2_bruschettamenu.png');
