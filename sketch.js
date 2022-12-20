@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 4;
+let stage = 0;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -328,6 +328,7 @@ function preload() {
     ding = loadSound('./assets/sound/ding.wav');
     scrollFlip = loadSound('./assets/sound/scroll.wav');
     disposalSound = loadSound('./assets/sound/disposal.wav');
+    purchase = loadSound('./assets/sound/purchase.wav');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -565,7 +566,7 @@ function keyPressed() {
         }
         else if (keyCode == 13 && selectedStatus1 == true){
                 inventoryArray[numStoreSelected].amount ++;
-                ding.play();
+                purchase.play();
             
         }
 }
