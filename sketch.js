@@ -357,7 +357,7 @@ function preload() {
     npc1 = loadImage('./assets/image/npc1.png');
     npc2 = loadImage('./assets/image/npc2.png');
     npc3 = loadImage('./assets/image/npc3.png');
-    table = loadImage('./assets/image/newtable.png');
+    table = loadImage('./assets/image/table.png');
     chair_right = loadImage('./assets/image/chair1.png');
     chair_left = loadImage('./assets/image/chair2.png');
     storefront = loadImage('./assets/image/storefront.png');
@@ -717,7 +717,7 @@ function draw() {
         } else {
             text("Please enter what number", 197, height / 6-15);
             text("you want to select", 198, height / 6+10);
-            text("Press `esc` to go back", 195, height / 6 + +35);
+            text("Press `esc` to leave", 199, height / 6 + +35);
         }
         //fill(255);
     }
