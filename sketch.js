@@ -400,7 +400,7 @@ function preload() {
     fridge = loadImage('./assets/image/fridge_flipped.png');
     door = loadImage('./assets/image/kitchendoor.png');
 
-    shop_inside = loadImage('./assets/image/shop_inside.JPG');
+    shop_inside = loadImage('./assets/image/shop_inside.jpg');
 }
 
 // Create canvas, build world and overlay,
@@ -691,7 +691,7 @@ function draw() {
 
         player.tileSize = kitchenTileSize;
 
-        if (random(10) < 1 && customerArr.length < 2) {
+        if (random(600) < 1 && customerArr.length < 2) {
             if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 12
                 && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7)) {
                 newCustomer();
