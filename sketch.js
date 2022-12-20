@@ -47,6 +47,9 @@ let amused, angry, annoyed, cool, crying,
     embarrassed, happy, love,
     pleased, relaxed, surprised, tired, unimpressed,
     upset;
+var villager_voice1, villager_voice2;
+let villager_no, villager_happy;
+let good_food, bad_food, get_food;
 
 let cornSeedsArt, seedsEmpty;
 let wheatSeedsArt;
@@ -333,6 +336,13 @@ function preload() {
     door_close = loadSound('./assets/sound/door_close.wav');
     door_open = loadSound('./assets/sound/door_open.wav');
     bubblePop = loadSound('./assets/sound/bubblePop.wav');
+    villager_voice1 = loadSound('./assets/sound/villager_howl.wav');
+    villager_voice2 = loadSound('./assets/sound/villager_sneeze.wav');
+    villager_no = loadSound('./assets/sound/villager_no.wav');
+    villager_happy = loadSound('./assets/sound/villager_happy.wav');
+    good_food = loadSound('./assets/sound/good_food.wav');
+    bad_food = loadSound('./assets/sound/bad_food.mp3');
+    get_food = loadSound('./assets/sound/get_food.mp3');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -340,9 +350,9 @@ function preload() {
     emotes[3] = loadImage('./assets/image/emotions/relaxed.png');
     emotes[4] = loadImage('./assets/image/emotions/amused.png');
     emotes[5] = loadImage('./assets/image/emotions/embarrassed.png');
-    emotes[6] = loadImage('./assets/image/emotions/angry.png');
-    emotes[7] = loadImage('./assets/image/emotions/annoyed.png');
-    emotes[8] = loadImage('./assets/image/emotions/cool.png');
+    emotes[6] = loadImage('./assets/image/emotions/cool.png');
+    emotes[7] = loadImage('./assets/image/emotions/angry.png');
+    emotes[8] = loadImage('./assets/image/emotions/annoyed.png');
     emotes[9] = loadImage('./assets/image/emotions/crying.png');
     emotes[10] = loadImage('./assets/image/emotions/surprised.png');
     emotes[11] = loadImage('./assets/image/emotions/tired.png');
@@ -552,7 +562,7 @@ function keyPressed() {
             menuPopUp = false;
             pot.insidePotArr = [];
             ingredientSelected = false;
-            
+
         } else if (keyCode === 8) {
             pot.insidePotArr.splice(-1, 1);
         }
@@ -602,7 +612,7 @@ function changeStage1() {
         player.y = 340;
         stage = 1;
         player.direction = 0;
-
+        door_close.play();
     }
 }
 
@@ -1097,7 +1107,7 @@ function interactOverlay(x, y) {
                 player.holding = true;
                 player.holdingPlate = pot.recipe;
                 pot.cooking = 0;
-               
+
             }
             else if (ingredientSelected && pot.insidePotArr.length < 3) {
                 let totalIngredients = 1;
@@ -1848,7 +1858,7 @@ class Animal {
             this.emoting = true;
             // have happy emotes be more likely
             if (random(3) > 1) {
-                this.emote = floor(random(6));
+                this.emote = floor(random(7));
             } else {
                 this.emote = floor(random(emotes.length));
             }
@@ -1965,7 +1975,7 @@ class Animal {
         imageMode(CENTER);
         if (this.emoting) {
             image(emotes[this.emote], this.x + offsetX + this.animalInfo.tileSize / 2, this.y + offsetY - this.animalInfo.tileSize / 4, 27, 27);
-            
+
             if (this.emoteTimer < this.maxEmoteTimer) {
                 this.emoteTimer++;
             } else {
@@ -2426,7 +2436,7 @@ class NPC {
             this.emoting = true;
             // have happy emotes be more likely
             if (random(3) > 1) {
-                this.emote = floor(random(6));
+                this.emote = floor(random(7));
             } else {
                 this.emote = floor(random(emotes.length));
             }
@@ -2491,14 +2501,14 @@ class NPC {
 
         if (player.holding) {
             if (order !== this.order) {
-                this.emote = floor(random(6, emotes.length));
+                this.emote = floor(random(7, emotes.length));
             } else {
-                this.emote = floor(random(6));
+                this.emote = floor(random(7));
                 this.ordering = false;
                 return true;
             }
         } else {
-            this.emote = floor(random(6));
+            this.emote = floor(random(7));
         }
         return false;
     }
