@@ -49,7 +49,7 @@ let amused, angry, annoyed, cool, crying,
     upset;
 var villager_voice1, villager_voice2;
 let villager_no, villager_happy;
-let good_food, bad_food, get_food;
+let good_food, bad_food, get_food, put_food;
 
 let cornSeedsArt, seedsEmpty;
 let wheatSeedsArt;
@@ -343,6 +343,7 @@ function preload() {
     good_food = loadSound('./assets/sound/good_food.wav');
     bad_food = loadSound('./assets/sound/bad_food.mp3');
     get_food = loadSound('./assets/sound/get_food.mp3');
+    put_food = loadSound('./assets/sound/put_food.wav');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -690,7 +691,7 @@ function draw() {
 
         player.tileSize = kitchenTileSize;
 
-        if (random(600) < 1 && customerArr.length < 2) {
+        if (random(10) < 1 && customerArr.length < 2) {
             if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 12
                 && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7)) {
                 newCustomer();
@@ -1107,7 +1108,7 @@ function interactOverlay(x, y) {
                 player.holding = true;
                 player.holdingPlate = pot.recipe;
                 pot.cooking = 0;
-
+                get_food.play();
             }
             else if (ingredientSelected && pot.insidePotArr.length < 3) {
                 let totalIngredients = 1;
@@ -1118,6 +1119,7 @@ function interactOverlay(x, y) {
                 }
                 if (inventoryArray[numIngredientSelected].amount >= totalIngredients) {
                     pot.insidePotArr.push(numIngredientSelected);
+                    put_food.play();
                 }
             }
         }
@@ -1349,6 +1351,7 @@ let tables = [[3, 5], [8, 5]];
 
 function newCustomer() {
     let table, chair;
+    console.log(tablesOccupied);
     if (tablesOccupied.includes(0)) {
         table = 1;
     } else if (tablesOccupied.includes(1)) {
@@ -1367,7 +1370,10 @@ function newCustomer() {
 }
 
 function removeCustomer(id) {
-    customerArr.splice(customerArr.findIndex(c => c.id === id), 1);
+    let c = customerArr.findIndex(c => c.id === id);
+    let customer = customerArr[c];
+    customerArr.splice(c, 1);
+    tablesOccupied.splice(tablesOccupied.findIndex(i => i === customer.table), 1);
 }
 
 function showFood(table, id) {
@@ -1863,6 +1869,7 @@ class Animal {
                 this.emote = floor(random(emotes.length));
             }
             this.emoteCoolDown = this.maxEmoteCoolDown;
+            bubblePop.play();
         }
     }
 
@@ -2437,10 +2444,13 @@ class NPC {
             // have happy emotes be more likely
             if (random(3) > 1) {
                 this.emote = floor(random(7));
+                villager_voice1.play();
             } else {
                 this.emote = floor(random(emotes.length));
+                villager_voice2.play();
             }
             this.emoteCoolDown = this.maxEmoteCoolDown;
+            bubblePop.play();
         }
     }
 
@@ -2497,14 +2507,19 @@ class NPC {
             this.emoteTimer = 0;
             this.emoting = true;
             this.emoteCoolDown = this.maxEmoteCoolDown;
+            bubblePop.play();
         }
 
         if (player.holding) {
             if (order !== this.order) {
                 this.emote = floor(random(7, emotes.length));
+                villager_no.play();
+                // bad_food.play();
             } else {
                 this.emote = floor(random(7));
                 this.ordering = false;
+                villager_happy.play();
+                // good_food.play();
                 return true;
             }
         } else {
