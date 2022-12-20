@@ -7,7 +7,7 @@ let cursorY = 0;
 let htmlElement;
 
 function preload() {
-  tilesetArtwork = loadImage('/assets/global.png');
+  tilesetArtwork = loadImage('/assets/image/global.png');
 }
 function setup() {
   createCanvas(2000, 1000);

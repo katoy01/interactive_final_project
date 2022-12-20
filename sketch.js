@@ -4,22 +4,23 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 1;
+let stage = 4;
 let cnv;
 let inventoryCanvas;
 let startImage;
 let inventoryArtwork;
 
 let inventoryArray = [];
+let storeArray = [];
 let inventoryTiles = [];
 let displayItems = [];
 let emotes = [];
 let nPCs = [];
 
 let inventoryItems;
-let cornSeeds;
-let wheatSeeds;
-let tomatoSeeds;
+let cornSeeds, cornSeeds1;
+let wheatSeeds, wheatSeeds1;
+let tomatoSeeds, tomatoSeeds1;
 let milk;
 let eggs;
 let corn;
@@ -29,6 +30,7 @@ let eggsalad, bruschetta, cheesybread;
 let cheesybread_plate, eggsalad_plate, bruschetta_plate;
 let pot;
 let recipeBookPNG;
+let shop_inside;
 
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
@@ -58,7 +60,9 @@ let wheatArt, wheatEmpty;
 
 // selecting inventory when planting seeds
 let numInventorySelected = -1;
+let numStoreSelected = -1;
 let selectedStatus = false;
+let selectedStatus1 = false;
 let numIngredientSelected = -1;
 let ingredientSelected = false;
 
@@ -352,8 +356,8 @@ function preload() {
     npc1 = loadImage('./assets/image/npc1.png');
     npc2 = loadImage('./assets/image/npc2.png');
     npc3 = loadImage('./assets/image/npc3.png');
-    table = loadImage('./assets/image/table.png');
-    chair_right = loadImage('./assets/image/chair.png');
+    table = loadImage('./assets/image/newtable.png');
+    chair_right = loadImage('./assets/image/chair1.png');
     chair_left = loadImage('./assets/image/chair2.png');
     storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
@@ -380,6 +384,8 @@ function preload() {
     recipeBookPNG = loadImage('./assets/image/recipebook.png');
     fridge = loadImage('./assets/image/fridge_flipped.png');
     door = loadImage('./assets/image/door.png');
+
+    shop_inside = loadImage('./assets/image/shop_inside.JPG');
 }
 
 // Create canvas, build world and overlay,
@@ -468,6 +474,11 @@ function setup() {
         milk = new Item("Milk", 5, inventoryTiles[6]),
         eggs = new Item("Eggs", 5, inventoryTiles[7])
     ];
+    storeArray = [
+        tomatoSeeds1 = new Item1("Tomato Seeds", 500, inventoryTiles[0]),
+        wheatSeeds1 = new Item1("Wheat Seeds", 500, inventoryTiles[1]),
+        cornSeeds1 = new Item1("Corn Seeds", 500, inventoryTiles[2]),
+    ];
 }
 
 // Triggers when you click mouse to start game and 
@@ -498,6 +509,9 @@ function mouseClicked() {
             }
         }
     }
+
+
+    
 }
 
 // Triggers when you press `enter` key when you are in the game,
@@ -538,6 +552,23 @@ function keyPressed() {
             pot.insidePotArr.splice(-1, 1);
         }
     }
+    else if(stage === 4){
+        if (keyCode >= 49 && keyCode <= 51) {
+            selectedStatus1 = true;
+            numStoreSelected = keyCode - 49;
+            storeArray[numStoreSelected].amount++;
+        }
+        else if (keyCode === 27) {
+            selectedStatus1 = false;
+            numStoreSelected = -1;
+            stage = 1;
+        }
+        else if (keyCode == 13 && selectedStatus1 == true){
+                inventoryArray[numStoreSelected].amount ++;
+                ding.play();
+            
+        }
+}
 }
 
 function changeStage() {
@@ -551,8 +582,19 @@ function changeStage() {
         player.direction = 0;
     }
 }
+function changeStage1() {
+    if (stage === 1) {
+        stage = 4;
+    } else if (stage === 4) {
+        player.x = 480;
+        player.y = 340;
+        stage = 1;
+        player.direction = 0;
+    }
+}
 
-// Has start screen (stage = 0), game screen (stage = 1), and inventory screen (stage = 2)
+
+// Has start screen (stage = 0), game screen (stage = 1), and inventory screen (stage = 2) and kitchen (stage = 3) and shop (stage = 4)
 // Displays world, overlay, player, animals, and any plants that were planted and are growing
 function draw() {
 
@@ -657,6 +699,26 @@ function draw() {
         //         imgID++;
         //     }
         // }
+    }
+    if (stage === 4){
+        background(113, 143, 63);
+        image(shop_inside, 0, 0, 960, 480);
+        displaySelectedBox1(numStoreSelected);
+        textAlign(CENTER);
+        fill(0);
+        textSize(15);
+        if (selectedStatus1 == true) {
+            if (numStoreSelected >= 0 && numStoreSelected <= 3) {
+                text("You selected: " + storeArray[numStoreSelected].name, 197, height / 6 -15);
+                text("Press enter to buy item", 196, height / 6 + 15);
+                text("Press `esc` to go back", 196, height / 6 + 35);
+            }
+        } else {
+            text("Please enter what number", 197, height / 6-15);
+            text("you want to select", 198, height / 6+10);
+            text("Press `esc` to go back", 195, height / 6 + +35);
+        }
+        //fill(255);
     }
 }
 
@@ -986,7 +1048,11 @@ function interactOverlay(x, y) {
         else if (getWorldTileAtPosition(x, y) === 2468) {
             changeStage();
         }
+        else if (getWorldTileAtPosition(x, y) === 3609) {
+            changeStage1();
+        }
     }
+    
     else if (stage === 2 && selectedStatus === true) {
         if (numInventorySelected >= 0 && numInventorySelected <= 2) {
             let plant = new Plant(x, y, inventoryArray[numInventorySelected].plantName);
@@ -1033,6 +1099,7 @@ function interactOverlay(x, y) {
             }
         }
     }
+    
 }
 
 // Displays a white box around selected item in inventory
@@ -1061,6 +1128,30 @@ function displaySelectedBox(itemNum) {
     noStroke();
 }
 
+function displaySelectedBox1(itemNum) {
+    if (!selectedStatus1) {
+        return;
+    }
+
+    stroke(255);
+    strokeWeight(3);
+
+    let yMin, yMax, xMin, xMax;
+    let itemSize = 62;
+    let itemDist = itemSize + 23;
+    yMin = 77;
+    yMax = yMin + itemSize;
+
+    xMin = 635 + (itemNum * itemDist);
+    xMax = xMin + itemSize;
+
+    line(xMin, yMin, xMax, yMin);
+    line(xMin, yMax, xMax, yMax);
+    line(xMin, yMin, xMin, yMax);
+    line(xMax, yMin, xMax, yMax);
+
+    noStroke();
+}
 // Shows a small bar on the bottom of the screen while playing the game
 // that displays the images and numbers of produce you have obtained
 function showProduceInventory() {
@@ -1825,6 +1916,17 @@ class Animal {
 // The inventory items
 // if it is a seed item, store the produce name for when you harvest it (convenient)
 class Item {
+    constructor(itemName, itemAmount, img) {
+        this.name = itemName;
+        this.amount = itemAmount;
+        this.graphic = img;
+        if (this.name.includes("Seeds")) {
+            let nameArray = this.name.toLowerCase().split(" ");
+            this.plantName = nameArray[0];
+        }
+    }
+}
+class Item1 {
     constructor(itemName, itemAmount, img) {
         this.name = itemName;
         this.amount = itemAmount;
