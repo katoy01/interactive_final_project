@@ -128,12 +128,18 @@
               You can press “enter” when in front of the customer to serve them the food. To exit the restaurant, go to door and press “enter”.<br/>
               <br/>
               NPC:<br/>
-              Villager NPC’s move from one location to another by using the A-star algorithm and the world grid. NPC’s are interactable,
-              where if the player presses “enter” in front of them they will stop to look at the player, before resuming their walking. 
-              The player can also stop NPC’s from moving by placing themself in front of them.<br/>
+              Villager NPC’s move from one location to another by using the A-star algorithm and the world grid. After they are done pathing to their desired 
+              location, they then compute a new random location to path to after being idle for a few seconds. 
+              NPC’s are interactable, where if the player presses “enter” in front of them they will stop to look at the player, 
+              before resuming their walking. The player can stop NPC’s from moving by placing themself in front of them as well.<br/>
+              <br/>
               Customer NPC’s always spawn in the entrance of the restaurant and path to either table, 
               and to either seat randomly. Occupied tables are kept track of so that no two customers sit in the same seat. 
-              The player can interact with them in the kitchen as well. The customer will ‘order’ after the are seated by displaying a speech bubble of the food that they want.
+              The player can interact with them in the kitchen as well. The customer will ‘order’ after the are seated by displaying a speech bubble 
+              of the food that they want. The player must look at the recipe book next to the pot to get their desired recipe, 
+              and then cook the food by placing the ingredients into the pot using “enter” and number keys “1-5.” After the food is done cooking the player 
+              can carry it over to the awaiting customer, however if you give them the wrong food they will get mad!
+
 
 
           </p>
