@@ -87,7 +87,7 @@ let kitchenTileSize = 80;
 let offsetX = -495;
 let offsetY = -685;
 let minOffsetX, minOffsetY;
-let kitchenOffsetX = 0 - (kitchenTileSize * 3 + kitchenTileSize / 2);
+let kitchenOffsetX = 0 - (kitchenTileSize * 6 + kitchenTileSize / 2);
 let kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize / 2);
 let minOffsetXKitchen, minOffsetYKitchen;
 
@@ -189,14 +189,13 @@ let kitchen = [
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
     [50, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 47, 48, 50],
     [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 0, 1, 30, 30, 30, 16, 50],
-    [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 7, 8, 37, 37, 37, 23, 50],
+    [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 37, 8, 37, 37, 37, 23, 50],
     [50, 11, 12, -3, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3, 50],
     [50, 11, -2, -2, -4, 12, 12, 12, -3, 12, 12, 12, 12, 12, 12, 12, 10, 50],
     [50, 11, 12, 12, 12, 12, 12, -2, -1, -4, 12, 12, 12, 12, 12, 12, 13, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
 ]
-
 
 
 let worldNotSolid = [];
@@ -328,6 +327,14 @@ function preload() {
     emotes[3] = loadImage('./assets/image/emotions/relaxed.png');
     emotes[4] = loadImage('./assets/image/emotions/amused.png');
     emotes[5] = loadImage('./assets/image/emotions/embarrassed.png');
+    emotes[6] = loadImage('./assets/image/emotions/angry.png');
+    emotes[7] = loadImage('./assets/image/emotions/annoyed.png');
+    emotes[8] = loadImage('./assets/image/emotions/cool.png');
+    emotes[9] = loadImage('./assets/image/emotions/crying.png');
+    emotes[10] = loadImage('./assets/image/emotions/surprised.png');
+    emotes[11] = loadImage('./assets/image/emotions/tired.png');
+    emotes[12] = loadImage('./assets/image/emotions/unimpressed.png');
+    emotes[13] = loadImage('./assets/image/emotions/upset.png');
 
     kitchenArtWork = loadImage('./assets/image/kitchen.png');
 
@@ -506,7 +513,7 @@ function keyPressed() {
     else if (stage === 3) {
         if (keyCode === 13) {
             player.changeEnvironment();
-            if (floor((player.x - kitchenOffsetX) / kitchenTileSize) === 8
+            if (floor((player.x - kitchenOffsetX) / kitchenTileSize) === 12
                 && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7) {
                 changeStage();
             }
@@ -579,7 +586,7 @@ function draw() {
 
 
     if (stage === 2) {
-        background(255);
+        background(113, 143, 63);
         inventoryBuffer = createGraphics(660, 330);
         inventoryBuffer.image(inventoryCanvas, 0, 0);
         image(inventoryBuffer, 0, 0);
@@ -614,7 +621,7 @@ function draw() {
         if (random(600) < 1 && customerArr.length < 2) {
             if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 8
                 && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7)) {
-                let customer = new NPC(8, 7, 1, 3, kitchenTileSize, 2);
+                let customer = new NPC(12, 7, 1, 3, kitchenTileSize, 2);
                 customerArr.push(customer);
             }
         }
@@ -704,7 +711,7 @@ function drawKitchen() {
                     x * kitchenTileSize, y * kitchenTileSize - kitchenTileSize * (3 / 4), kitchenTileSize, kitchenTileSize);
             }
             // draw door
-            if (x === 9 && y === 8) {
+            if (x === 13 && y === 8) {
                 drawTile(door, 0, door.width, door.height,
                     x * kitchenTileSize, y * kitchenTileSize, door.width, kitchenTileSize);
             }
@@ -971,9 +978,16 @@ function interactOverlay(x, y) {
                 player.holdingPlate = pot.recipe;
                 pot.cooking = 0;
             }
-            else if (ingredientSelected && pot.insidePotArr.length < 3
-                && inventoryArray[numIngredientSelected].amount >= 1) {
-                pot.insidePotArr.push(numIngredientSelected);
+            else if (ingredientSelected && pot.insidePotArr.length < 3) {
+                let totalIngredients = 1;
+                for (let i = 0; i < pot.insidePotArr.length; i++) {
+                    if (pot.insidePotArr[i] === numIngredientSelected) {
+                        totalIngredients++;
+                    }
+                }
+                if (inventoryArray[numIngredientSelected].amount >= totalIngredients) {
+                    pot.insidePotArr.push(numIngredientSelected);
+                }
             }
         }
         else if (getOverlayTileAtPosition(x, y) === 7) {
@@ -1642,7 +1656,12 @@ class Animal {
         if (this.emoteCoolDown <= 0) {
             this.emoteTimer = 0;
             this.emoting = true;
-            this.emote = floor(random(6));
+            // have happy emotes be more likely
+            if (random(3) > 1) {
+                this.emote = floor(random(6));
+            } else {
+                this.emote = floor(random(emotes.length));
+            }
             this.emoteCoolDown = this.maxEmoteCoolDown;
         }
     }
@@ -2073,14 +2092,27 @@ class NPC {
     }
 
     newDest() {
+        let pathTileSize;
+        // compute new node value
+        if (this.mode === 2) {
+            pathTileSize = kitchenTileSize;
+        } else {
+            pathTileSize = worldTileSize;
+        }
+
         this.nodeHistory = [];
         this.walking = false;
+
+        this.nodeX = int(this.x / pathTileSize);
+        this.nodeY = int(this.y / pathTileSize);
+        this.nodeHistory.push([this.nodeX, this.nodeY]);
 
         let to = worldNotSolid[floor(random(worldNotSolid.length))];
         this.destX = to[0], this.destY = to[1];
 
         this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
-        this.recomputePath();
+        this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * pathTileSize + pathTileSize / 2;
+        this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * pathTileSize + pathTileSize / 2;
     }
 
     // If the player presses `enter` in front of the npc
@@ -2142,7 +2174,12 @@ class NPC {
         if (this.emoteCoolDown <= 0) {
             this.emoteTimer = 0;
             this.emoting = true;
-            this.emote = floor(random(6));
+            // have happy emotes be more likely
+            if (random(3) > 1) {
+                this.emote = floor(random(6));
+            } else {
+                this.emote = floor(random(emotes.length));
+            }
             this.emoteCoolDown = this.maxEmoteCoolDown;
         }
     }
@@ -2193,7 +2230,8 @@ class NPC {
             // look up
             this.direction = 3;
         }
-        else {
+        else if (this.mode === 1) {
+            console.log("NOT MOVINGs");
             this.newDest();
         }
 
