@@ -573,9 +573,9 @@ function keyPressed() {
 function changeStage() {
     if (stage === 1) {
         stage = 3;
-        player.y = height - kitchenTileSize;
+        player.y = height - (kitchenTileSize * 1.5);
         kitchenOffsetX = 0 - (kitchenTileSize * 6 + kitchenTileSize / 2);
-        kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize / 2);
+        kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize);
         player.direction = 3;
     } else if (stage === 3) {
         player.x = 480;
@@ -613,7 +613,6 @@ function draw() {
         pop();
 
         // the character will always be drawn in the middle of the screen
-        player.moveAndDisplay(playerTileSizeX, playerTileSizeY);
         plantArr.forEach(plant => {
             plant.display();
         });
@@ -623,8 +622,10 @@ function draw() {
         })
         npcArr.forEach(npc => {
             npc.display();
+        })
+        player.moveAndDisplay(playerTileSizeX, playerTileSizeY);
+        npcArr.forEach(npc => {
             npc.displayEmote();
-            // npc.displayEmote();
             if (npc.isAtEnd()) {
                 npc.newDest();
             } else if (npc.walking) {
@@ -667,7 +668,6 @@ function draw() {
         pop();
 
         player.tileSize = kitchenTileSize;
-        player.moveAndDisplayKitchen();
 
         if (random(600) < 1 && customerArr.length < 2) {
             if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 12
@@ -677,6 +677,9 @@ function draw() {
         }
         customerArr.forEach(customer => {
             customer.displayKitchen();
+        })
+        player.moveAndDisplayKitchen();
+        customerArr.forEach(customer => {
             customer.displayEmote();
             if (customer.isAtEnd()) {
                 if (customer.order >= 0) {
@@ -789,9 +792,11 @@ function drawKitchen() {
                     x * kitchenTileSize, y * kitchenTileSize - kitchenTileSize * (3 / 4), kitchenTileSize, kitchenTileSize);
             }
             // draw door
-            if (x === 13 && y === 8) {
-                drawTile(door, 0, door.width, door.height,
-                    x * kitchenTileSize, y * kitchenTileSize, door.width, kitchenTileSize);
+            if (x === 12 && y === 8) {
+                imageMode(CENTER);
+                drawTile(door, 0, door.width, door.height, x * kitchenTileSize + kitchenTileSize / 2,
+                    y * kitchenTileSize + kitchenTileSize / 2, kitchenTileSize * 3, kitchenTileSize * 2);
+                imageMode(CORNER);
             }
             // draw table
             if (idOverlay === -4) {
