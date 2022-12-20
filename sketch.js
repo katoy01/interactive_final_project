@@ -32,7 +32,7 @@ let recipeBookPNG;
 
 let dish_pile, dish1, dish2, bowl;
 let npc1, npc2, npc3;
-let table, chair;
+let table, chair_right, chair_left;
 let storefront;
 let door;
 
@@ -74,6 +74,8 @@ let walk;
 let field_theme;
 let cookingSound;
 let ding;
+let scrollFlip;
+let disposalSound;
 
 // The size of each tile (32 x 32 square)
 // They are all the same now, which might seem redundant, but we were experimenting with tile sizes 
@@ -191,7 +193,7 @@ let kitchen = [
     [50, 54, 55, 54, 55, 54, 55, 54, 55, 0, 17, 0, 1, 30, 30, 30, 16, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 7, 24, 37, 8, 37, 37, 37, 23, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 3, 50],
-    [50, 11, -2, -2, -4, 12, 12, -2, -1, -4, 12, 12, 12, 12, 12, 12, 10, 50],
+    [50, 11, -2, -4, -3, 12, 12, -2, -4, -3, 12, 12, 12, 12, 12, 12, 10, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
     [50, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 50],
     [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
@@ -320,6 +322,8 @@ function preload() {
     field_theme = loadSound('./assets/sound/field_theme.wav');
     cookingSound = loadSound('./assets/sound/cookingSound.wav');
     ding = loadSound('./assets/sound/ding.wav');
+    scrollFlip = loadSound('./assets/sound/scroll.wav');
+    disposalSound = loadSound('./assets/sound/disposal.wav');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -349,7 +353,8 @@ function preload() {
     npc2 = loadImage('./assets/image/npc2.png');
     npc3 = loadImage('./assets/image/npc3.png');
     table = loadImage('./assets/image/table.png');
-    chair = loadImage('./assets/image/chair.png');
+    chair_right = loadImage('./assets/image/chair.png');
+    chair_left = loadImage('./assets/image/chair2.png');
     storefront = loadImage('./assets/image/storefront.png');
     arrow = loadImage('./assets/image/arrow.png');
 
@@ -486,8 +491,10 @@ function mouseClicked() {
         else if (menuPopUp) {
             if (mouseX > width / 2 && menuShowing < pot.recipeBook.length - 1) {
                 menuShowing++;
+                scrollFlip.play();
             } else if (mouseX < width / 2 && menuShowing > 0) {
                 menuShowing--;
+                scrollFlip.play();
             }
         }
     }
@@ -715,6 +722,22 @@ function drawKitchen() {
                 drawTile(door, 0, door.width, door.height,
                     x * kitchenTileSize, y * kitchenTileSize, door.width, kitchenTileSize);
             }
+            // draw table
+            if (idOverlay === -4) {
+                drawTile(table, 0, table.width, table.height,
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+            }
+            if (idOverlay === -2) {
+                drawTile(chair_right, 0, chair_right.width, chair_right.height,
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+            }
+            if (idOverlay === -3) {
+                drawTile(chair_left, 0, chair_left.width, chair_left.height,
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+            }
+            // textAlign(CENTER);
+            // textSize(10);
+            // text(x + ',' + y, x * kitchenTileSize + kitchenTileSize / 2, y * kitchenTileSize + kitchenTileSize / 2)
         }
     }
 }
@@ -774,7 +797,12 @@ function setupOverlayKitchen() {
             else if ((y >= 3 && y <= 5) && (x === kitchen[y].length - 2)) {
                 overlayKitchen[y].push(kitchen[y][x]);
                 kitchen[y][x] = 13;
-            } else {
+            }
+            else if (kitchen[y][x] < 0) {
+                overlayKitchen[y].push(kitchen[y][x]);
+                kitchen[y][x] = 12;
+            }
+            else {
                 overlayKitchen[y].push(-1);
             }
         }
@@ -879,7 +907,8 @@ function isSolidKitchen(id) {
     // return true for all solid tiles
     if (id === 50 || id === 47 || id === 48 || id === 0 || id === 17 ||
         id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23
-        || id === 35 || id === 8 || id === 9 || id === 23 || id === 37 || id === 24 || id === 7) {
+        || id === 35 || id === 8 || id === 9 || id === 23 || id === 37 || id === 24 || id === 7
+        || id === -2 || id === -3 || id === -4) {
         return true;
     }
     return false;
@@ -1000,6 +1029,7 @@ function interactOverlay(x, y) {
             if (player.holding) {
                 player.holding = false;
                 player.holdingPlate = -1;
+                disposalSound.play();
             }
         }
     }
@@ -1806,6 +1836,9 @@ class Item {
     }
 }
 
+let tablesOccupied = [];
+let tableChairs = [[2, 5], [4, 5], [7, 5], [9, 5]];
+let tables = [[3, 5], [8, 5]];
 class NPC {
     constructor(arrayX, arrayY, destX, destY, worldTileSize, mode) {
         this.x = arrayX * worldTileSize + worldTileSize / 2;
