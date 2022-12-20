@@ -2546,6 +2546,10 @@ class NPC {
 
     move() {
         // move based on current movement vector
+        if (!(this.desiredX && this.desiredY)) {
+            console.log("NOT MOVING");
+            this.newDest();
+        }
         if (this.x < this.desiredX) {
             if (this.noPlayer(this.x + this.npcInfo.tileSizeX / 2, this.y)) {
                 this.x += 1;
@@ -2573,10 +2577,6 @@ class NPC {
             }
             // look up
             this.direction = 3;
-        }
-        else if (this.mode === 1) {
-            console.log("NOT MOVINGs");
-            this.newDest();
         }
 
         // have we reached our new position?  if so, compute a new node value
