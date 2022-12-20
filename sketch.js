@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 0;
+let stage = 1;
 let cnv;
 let inventoryCanvas;
 let startImage;
@@ -512,7 +512,7 @@ function mouseClicked() {
     }
 
 
-    
+
 }
 
 // Triggers when you press `enter` key when you are in the game,
@@ -553,7 +553,7 @@ function keyPressed() {
             pot.insidePotArr.splice(-1, 1);
         }
     }
-    else if(stage === 4){
+    else if (stage === 4) {
         if (keyCode >= 49 && keyCode <= 51) {
             selectedStatus1 = true;
             numStoreSelected = keyCode - 49;
@@ -564,18 +564,21 @@ function keyPressed() {
             numStoreSelected = -1;
             stage = 1;
         }
-        else if (keyCode == 13 && selectedStatus1 == true){
-                inventoryArray[numStoreSelected].amount ++;
-                purchase.play();
-            
+        else if (keyCode == 13 && selectedStatus1 == true) {
+            inventoryArray[numStoreSelected].amount++;
+            purchase.play();
+
         }
-}
+    }
 }
 
 function changeStage() {
     if (stage === 1) {
         stage = 3;
         player.y = height - kitchenTileSize;
+        kitchenOffsetX = 0 - (kitchenTileSize * 6 + kitchenTileSize / 2);
+        kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize / 2);
+        player.direction = 3;
     } else if (stage === 3) {
         player.x = 480;
         player.y = 340;
@@ -669,16 +672,23 @@ function draw() {
         player.moveAndDisplayKitchen();
 
         if (random(600) < 1 && customerArr.length < 2) {
-            if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 8
+            if (!(floor((player.x - kitchenOffsetX) / kitchenTileSize) === 12
                 && floor((player.y - kitchenOffsetY) / kitchenTileSize) === 7)) {
-                let customer = new NPC(12, 7, 1, 3, kitchenTileSize, 2);
-                customerArr.push(customer);
+                newCustomer();
             }
         }
         customerArr.forEach(customer => {
             customer.displayKitchen();
             customer.displayEmote();
-            if (customer.walking) {
+            if (customer.isAtEnd()) {
+                if (customer.order >= 0) {
+                    customer.goHome();
+                    customer.walking = false;
+                    customer.ordering = true;
+                } else {
+                    removeCustomer(customer.id);
+                }
+            } else if (customer.walking) {
                 customer.move();
             }
         })
@@ -701,7 +711,7 @@ function draw() {
         //     }
         // }
     }
-    if (stage === 4){
+    if (stage === 4) {
         background(113, 143, 63);
         image(shop_inside, 0, 0, 960, 480);
         displaySelectedBox1(numStoreSelected);
@@ -710,13 +720,13 @@ function draw() {
         textSize(15);
         if (selectedStatus1 == true) {
             if (numStoreSelected >= 0 && numStoreSelected <= 3) {
-                text("You selected: " + storeArray[numStoreSelected].name, 197, height / 6 -15);
+                text("You selected: " + storeArray[numStoreSelected].name, 197, height / 6 - 15);
                 text("Press enter to buy item", 196, height / 6 + 15);
                 text("Press `esc` to go back", 196, height / 6 + 35);
             }
         } else {
-            text("Please enter what number", 197, height / 6-15);
-            text("you want to select", 198, height / 6+10);
+            text("Please enter what number", 197, height / 6 - 15);
+            text("you want to select", 198, height / 6 + 10);
             text("Press `esc` to go back", 195, height / 6 + +35);
         }
         //fill(255);
@@ -788,15 +798,15 @@ function drawKitchen() {
             // draw table
             if (idOverlay === -4) {
                 drawTile(table, 0, table.width, table.height,
-                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
             }
             if (idOverlay === -2) {
                 drawTile(chair_right, 0, chair_right.width, chair_right.height,
-                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
             }
             if (idOverlay === -3) {
                 drawTile(chair_left, 0, chair_left.width, chair_left.height,
-                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 4));
+                    x * kitchenTileSize, y * kitchenTileSize, kitchenTileSize, kitchenTileSize);
             }
             // textAlign(CENTER);
             // textSize(10);
@@ -971,7 +981,7 @@ function isSolidKitchen(id) {
     if (id === 50 || id === 47 || id === 48 || id === 0 || id === 17 ||
         id === 1 || id === 30 || id === 16 || id === 10 || id === 3 || id === 54 || id === 55 || id === 2 || id === 23
         || id === 35 || id === 8 || id === 9 || id === 23 || id === 37 || id === 24 || id === 7
-        || id === -2 || id === -3 || id === -4) {
+        || id === -4) {
         return true;
     }
     return false;
@@ -1053,7 +1063,7 @@ function interactOverlay(x, y) {
             changeStage1();
         }
     }
-    
+
     else if (stage === 2 && selectedStatus === true) {
         if (numInventorySelected >= 0 && numInventorySelected <= 2) {
             let plant = new Plant(x, y, inventoryArray[numInventorySelected].plantName);
@@ -1065,7 +1075,7 @@ function interactOverlay(x, y) {
     else if (stage === 3) {
         // console.log(getOverlayTileAtPosition(x, y));
         if (getOverlayTileAtPosition(x, y) === 24) {
-            if (!potPopUp && pot.cooking === 0) {
+            if (!potPopUp && pot.cooking === 0 && player.holding === false) {
                 ingredientSelected = false;
                 potPopUp = !potPopUp;
             }
@@ -1100,7 +1110,7 @@ function interactOverlay(x, y) {
             }
         }
     }
-    
+
 }
 
 // Displays a white box around selected item in inventory
@@ -1308,6 +1318,41 @@ function displayTime() {
 }
 
 
+let tablesOccupied = [];
+let tableChairs = [[4, 5], [2, 5], [9, 5], [7, 5]];
+let tables = [[3, 5], [8, 5]];
+
+function newCustomer() {
+    let table, chair;
+    if (tablesOccupied.includes(0)) {
+        table = 1;
+    } else if (tablesOccupied.includes(1)) {
+        table = 0;
+    } else {
+        table = floor(random(2));
+    }
+    tablesOccupied.push(table);
+    chair = floor(random(2));
+    let index = (table * 2) + chair;
+    let to = tableChairs[index];
+    let customer = new NPC(12, 7, to[0], to[1], kitchenTileSize, 2);
+    customer.chair = chair;
+    customer.table = table;
+    customerArr.push(customer);
+}
+
+function removeCustomer(id) {
+    customerArr.splice(customerArr.findIndex(c => c.id === id), 1);
+}
+
+function showFood(table, id) {
+    let x = tables[table][0], y = tables[table][1];
+    drawTile(pot.recipeBook[id].plate, 0, pot.recipeBook[id].plate.width, pot.recipeBook[id].plate.height,
+        x * kitchenTileSize + kitchenOffsetX + kitchenTileSize / 2, y * kitchenTileSize + kitchenOffsetY + kitchenTileSize / 4,
+        kitchenTileSize * (3 / 4), kitchenTileSize * (3 / 5));
+}
+
+
 /**
  * CLASSES
  */
@@ -1368,13 +1413,21 @@ class Player {
             for (let index = 0; index < npcArr.length; index++) {
                 npcArr[index].lookAtPlayer(tempX, tempY);
             }
+        } else if (stage === 3) {
+            for (let index = 0; index < customerArr.length; index++) {
+                let correct = customerArr[index].takeOrder(tempX, tempY, this.holdingPlate);
+                if (correct) {
+                    this.holdingPlate = -1;
+                    this.holding = false;
+                }
+            }
         }
     }
 
     showPlate() {
         if (this.holding) {
             let img = pot.recipeBook[this.holdingPlate].plate;
-            drawTile(img, 0, img.width, img.height, this.x, this.y - kitchenTileSize / 2, kitchenTileSize, kitchenTileSize / 1.5);
+            drawTile(img, 0, img.width, img.height, this.x, this.y - kitchenTileSize / 2, kitchenTileSize / 1.5, kitchenTileSize / 1.5);
         }
     }
 
@@ -1486,7 +1539,7 @@ class Player {
 
         // movement
         if (keyIsDown(68)) {
-            ellipse(this.right, this.middleY, 5, 5);
+            // ellipse(this.right, this.middleY, 5, 5);
             let id = getWorldTileAtPosition(this.right, this.middleY);
             let id2 = getOverlayTileAtPosition(this.right, this.middleY);
             if (!isSolidKitchen(id) && !isSolidKitchen(id2)
@@ -1939,9 +1992,7 @@ class Item1 {
     }
 }
 
-let tablesOccupied = [];
-let tableChairs = [[2, 5], [4, 5], [7, 5], [9, 5]];
-let tables = [[3, 5], [8, 5]];
+
 class NPC {
     constructor(arrayX, arrayY, destX, destY, worldTileSize, mode) {
         this.x = arrayX * worldTileSize + worldTileSize / 2;
@@ -1986,6 +2037,21 @@ class NPC {
 
         this.idleTimer = 0;
         this.maxIdleTimer = 240;
+
+        // for customers
+        if (this.mode === 2) {
+            if (customerArr.length >= 1) {
+                this.id = 1 - customerArr[0].id;
+            } else {
+                this.id = 0;
+            }
+            this.order = floor(random(3));
+            this.table = -1;
+            this.chair = -1;
+            this.walking = true;
+            this.maxIdleTimer = 600;
+            this.ordering = false;
+        }
     }
 
     findPaths(startX, startY, endX, endY) {
@@ -2221,9 +2287,18 @@ class NPC {
     }
 
     isAtEnd() {
-        if (int(this.x / worldTileSize) === this.destX && int(this.y / worldTileSize) === this.destY) {
+        let pathTileSize;
+        if (this.mode === 2) {
+            pathTileSize = kitchenTileSize;
+        } else {
+            pathTileSize = worldTileSize;
+        }
+        if (dist(this.x / pathTileSize, this.y / pathTileSize, this.destX, this.destY) <= 1) {
+            this.x = this.destX * pathTileSize + pathTileSize / 2;
+            this.y = this.destY * pathTileSize + pathTileSize / 2;
             return true;
         }
+
         return false;
     }
 
@@ -2245,6 +2320,29 @@ class NPC {
 
         let to = worldNotSolid[floor(random(worldNotSolid.length))];
         this.destX = to[0], this.destY = to[1];
+
+        this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
+        this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * pathTileSize + pathTileSize / 2;
+        this.desiredY = this.grid[this.nodeY][this.nodeX].nextY * pathTileSize + pathTileSize / 2;
+    }
+
+    goHome() {
+        let pathTileSize;
+        // compute new node value
+        if (this.mode === 2) {
+            pathTileSize = kitchenTileSize;
+        } else {
+            pathTileSize = worldTileSize;
+        }
+
+        this.nodeHistory = [];
+        this.walking = false;
+
+        this.nodeX = int(this.x / pathTileSize);
+        this.nodeY = int(this.y / pathTileSize);
+        this.nodeHistory.push([this.nodeX, this.nodeY]);
+
+        this.destX = 12, this.destY = 7;
 
         this.findPaths(this.nodeX, this.nodeY, this.destX, this.destY);
         this.desiredX = this.grid[this.nodeY][this.nodeX].nextX * pathTileSize + pathTileSize / 2;
@@ -2318,6 +2416,75 @@ class NPC {
             }
             this.emoteCoolDown = this.maxEmoteCoolDown;
         }
+    }
+
+    takeOrder(screenX, screenY, order) {
+        let realX = screenX - kitchenOffsetX;
+        let realY = screenY - kitchenOffsetY;
+        if (dist(realX, realY, this.x, this.y) > kitchenTileSize) {
+            return false;
+        }
+        let slope;
+        if (realX < this.x) {
+            slope = (this.y - realY) / (this.x - realX);
+        } else {
+            slope = (realY - this.y) / (realX - this.x);
+        }
+        if (slope > 0) {
+            if (slope < 1) {
+                if (this.x > realX) {
+                    // left
+                    this.direction = 1;
+                } else {
+                    // right
+                    this.direction = 2;
+                }
+            } else {
+                if (this.y > realY) {
+                    // up
+                    this.direction = 3;
+                } else {
+                    // down
+                    this.direction = 0;
+                }
+            }
+        } else {
+            if (slope > -1) {
+                if (this.x > realX) {
+                    // left
+                    this.direction = 1;
+                } else {
+                    // right
+                    this.direction = 2;
+                }
+            } else {
+                if (this.y > realY) {
+                    // up
+                    this.direction = 3;
+                } else {
+                    // down
+                    this.direction = 0;
+                }
+            }
+        }
+        if (this.emoteCoolDown <= 0) {
+            this.emoteTimer = 0;
+            this.emoting = true;
+            this.emoteCoolDown = this.maxEmoteCoolDown;
+        }
+
+        if (player.holding) {
+            if (order !== this.order) {
+                this.emote = floor(random(6, emotes.length));
+            } else {
+                this.emote = floor(random(6));
+                this.ordering = false;
+                return true;
+            }
+        } else {
+            this.emote = floor(random(6));
+        }
+        return false;
     }
 
 
@@ -2450,25 +2617,43 @@ class NPC {
                 this.currentFrames = 0;
             }
             this.currentFrames++;
+        } else if (this.ordering) {
+            if (!this.emoting) {
+                this.spritePos = 0;
+                this.direction = this.chair + 1;
+                let img = pot.recipeBook[this.order].bubble;
+                drawTile(img, 0, img.width, img.height, this.x + kitchenOffsetX + kitchenTileSize / 4,
+                    this.y + kitchenOffsetY - kitchenTileSize / 4, kitchenTileSize, kitchenTileSize * 1.5);
+            }
         } else {
             this.spritePos = 0;
+            this.direction = this.chair + 1;
             if (this.idleTimer < this.maxIdleTimer) {
                 this.idleTimer++;
-                if (floor(random(100)) < 1) {
-                    this.direction = floor(random(4));
-                }
+                showFood(this.table, this.order);
             } else {
                 this.walking = true;
                 this.idleTimer = 0;
+                this.order = -1;
             }
         }
         imageMode(CORNER);
     }
 
     displayEmote() {
+        let x, y, size;
+        if (this.mode === 2) {
+            x = this.x + kitchenOffsetX + kitchenTileSize / 2;
+            y = this.y + kitchenOffsetY - kitchenTileSize / 3;
+            size = 60;
+        } else {
+            x = this.x + offsetX + this.npcInfo.tileSizeX / 2;
+            y = this.y + offsetY - this.npcInfo.tileSizeY / 3;
+            size = 27;
+        }
         imageMode(CENTER);
         if (this.emoting) {
-            image(emotes[this.emote], this.x + offsetX + this.npcInfo.tileSizeX / 2, this.y + offsetY - this.npcInfo.tileSizeY / 3, 27, 27);
+            image(emotes[this.emote], x, y, size, size);
             if (this.emoteTimer < this.maxEmoteTimer) {
                 this.emoteTimer++;
             } else {
