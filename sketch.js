@@ -79,6 +79,8 @@ let cookingSound;
 let ding;
 let scrollFlip;
 let disposalSound;
+let door_open, door_close;
+let bubblePop;
 
 // The size of each tile (32 x 32 square)
 // They are all the same now, which might seem redundant, but we were experimenting with tile sizes 
@@ -328,6 +330,9 @@ function preload() {
     scrollFlip = loadSound('./assets/sound/scroll.wav');
     disposalSound = loadSound('./assets/sound/disposal.wav');
     purchase = loadSound('./assets/sound/purchase.wav');
+    door_close = loadSound('./assets/sound/door_close.wav');
+    door_open = loadSound('./assets/sound/door_open.wav');
+    bubblePop = loadSound('./assets/sound/bubblePop.wav');
 
     emotes[0] = loadImage('./assets/image/emotions/love.png');
     emotes[1] = loadImage('./assets/image/emotions/happy.png');
@@ -547,6 +552,7 @@ function keyPressed() {
             menuPopUp = false;
             pot.insidePotArr = [];
             ingredientSelected = false;
+            
         } else if (keyCode === 8) {
             pot.insidePotArr.splice(-1, 1);
         }
@@ -561,6 +567,7 @@ function keyPressed() {
             selectedStatus1 = false;
             numStoreSelected = -1;
             stage = 1;
+            door_close.play();
         }
         else if (keyCode == 13 && selectedStatus1 == true) {
             inventoryArray[numStoreSelected].amount++;
@@ -577,21 +584,25 @@ function changeStage() {
         kitchenOffsetX = 0 - (kitchenTileSize * 6 + kitchenTileSize / 2);
         kitchenOffsetY = 0 - (kitchenTileSize * 2 + kitchenTileSize);
         player.direction = 3;
+        door_open.play();
     } else if (stage === 3) {
         player.x = 480;
         player.y = 340;
         stage = 1;
         player.direction = 0;
+        door_close.play();
     }
 }
 function changeStage1() {
     if (stage === 1) {
         stage = 4;
+        door_open.play();
     } else if (stage === 4) {
         player.x = 480;
         player.y = 340;
         stage = 1;
         player.direction = 0;
+
     }
 }
 
@@ -1086,6 +1097,7 @@ function interactOverlay(x, y) {
                 player.holding = true;
                 player.holdingPlate = pot.recipe;
                 pot.cooking = 0;
+               
             }
             else if (ingredientSelected && pot.insidePotArr.length < 3) {
                 let totalIngredients = 1;
@@ -1953,6 +1965,7 @@ class Animal {
         imageMode(CENTER);
         if (this.emoting) {
             image(emotes[this.emote], this.x + offsetX + this.animalInfo.tileSize / 2, this.y + offsetY - this.animalInfo.tileSize / 4, 27, 27);
+            
             if (this.emoteTimer < this.maxEmoteTimer) {
                 this.emoteTimer++;
             } else {
