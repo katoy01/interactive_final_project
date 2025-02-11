@@ -4,7 +4,7 @@
 let tilesetArtwork, playerArtwork;
 let chicken_babyArt, chickenArt, cow_baby_brownArt, cow_brownArt;
 // `stage` = different states of the entire game
-let stage = 1;
+let stage = 0;
 let cnv;
 let inventoryCanvas;
 let startImage;
